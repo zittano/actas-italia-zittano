@@ -113,11 +113,6 @@ textarea{resize:vertical;}
 </head>
 <body>
 
-<!-- BANNER DE CONFIGURACIÓN -->
-<div class="config-banner" id="config-banner">
-  ⚙️ <strong>CONFIGURACIÓN REQUERIDA:</strong> Editá el archivo y agregá tus credenciales de Supabase en las líneas 420-421
-</div>
-
 <!-- LOADING -->
 <div class="loading" id="loading">
   <div class="loading-spinner"></div>
@@ -276,13 +271,6 @@ textarea{resize:vertical;}
 // ⚠️ CONFIGURACIÓN DE SUPABASE - EDITÁ ESTAS 2 LÍNEAS CON TUS CREDENCIALES
 const SUPABASE_URL = 'https://gcbmskkzodmszrqtdfb.supabase.co';  // Ej: 'https://xxxxx.supabase.co'
 const SUPABASE_ANON_KEY = 'sb_publishable_8DaoozfaLFtaYjwa220GpQ_jAhj_BkB';  // Tu clave pública (anon key)
-
-// Verificar configuración
-if (SUPABASE_URL === 'TU_SUPABASE_URL_AQUI' || SUPABASE_ANON_KEY === 'TU_SUPABASE_ANON_KEY_AQUI') {
-  document.getElementById('config-banner').style.display = 'block';
-} else {
-  document.getElementById('config-banner').style.display = 'none';
-}
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
