@@ -50,6 +50,10 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
 .tipo-bautismo{background:#dbeafe;color:#1e40af}
 .btn-actions{display:flex;gap:6px}
 .btn-edit,.btn-del,.btn-finalizar,.btn-proceso{padding:6px 12px;border:1px solid var(--bo);border-radius:6px;font-size:12px;cursor:pointer}
+.btn-edit{background:transparent;color:var(--gr)}
+.btn-edit:hover{background:#e8efff;border-color:var(--az);color:var(--az)}
+.btn-del{background:transparent;color:var(--gr)}
+.btn-del:hover{background:var(--rol);border-color:var(--ro);color:var(--ro)}
 .btn-finalizar{background:var(--vdl);color:var(--vd);font-weight:600;border-color:var(--vd)}
 .btn-proceso{background:var(--aml);color:var(--am);font-weight:600;border-color:var(--am)}
 .imperio-badge{display:inline-flex;gap:4px;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;background:#fef3c7;color:#78350f;border:1.5px solid #fcd34d;margin-left:6px}
@@ -187,6 +191,8 @@ return`<tr>
 <td><div class="btn-actions">
 ${t==='proceso'?`<button class="btn-finalizar" onclick="mover('${t}',${ix},'finalizados')">✓ Finalizar</button>`:''}
 ${t==='finalizados'?`<button class="btn-proceso" onclick="mover('${t}',${ix},'proceso')">← En Proceso</button>`:''}
+<button class="btn-edit" onclick="editar('${t}',${ix})">Editar</button>
+<button class="btn-del" onclick="eliminar('${t}',${ix})">Eliminar</button>
 </div></td>
 </tr>`;
 }).join('');
@@ -235,6 +241,23 @@ F.proceso=[...D.proceso];
 F.finalizados=[...D.finalizados];
 render('proceso');
 render('finalizados');
+document.getElementById('cnt').textContent=F[V].length;
+}
+}
+
+function editar(t,ix){
+alert('Función Editar en desarrollo');
+}
+
+function eliminar(t,ix){
+const a=F[t][ix];
+if(!confirm(`¿Eliminar la acta de ${a.persona}?`))return;
+const ri=D[t].findIndex(x=>x.id===a.id);
+if(ri!==-1){
+D[t].splice(ri,1);
+localStorage.setItem('actas-zittano',JSON.stringify(D));
+F[t]=[...D[t]];
+render(t);
 document.getElementById('cnt').textContent=F[V].length;
 }
 }
