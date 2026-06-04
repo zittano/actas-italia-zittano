@@ -5,11 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Zittano — Actas Italia</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--az:#003399;--vd:#009246;--vdl:#e6f7ee;--ro:#CE2B37;--rol:#fdecea;--am:#f59e0b;--aml:#fef9c3;--gr:#64748b;--grl:#f1f5f9;--bg:#f8fafc;--wh:#fff;--bo:#e2e8f0;}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-height:100vh}
-.hdr{background:var(--wh);border-bottom:1px solid var(--bo);position:sticky;top:0;z-index:100}
+.hdr{background:var(--wh);border-bottom:2px solid #e0e0e0;position:sticky;top:0;z-index:100}
 .hdr-in{max-width:1600px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:58px;padding:0 24px;gap:16px}
 .hlogo{display:flex;align-items:center;gap:10px}
 .logo-banderas{display:flex;gap:4px;height:36px}
@@ -26,8 +27,8 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
 .hbrand{font-family:"DM Serif Display",serif;font-size:20px;letter-spacing:1px}
 .hsub{font-size:9px;font-weight:500;letter-spacing:2px;color:#bbb;text-transform:uppercase}
 .htabs{display:flex;gap:2px;background:var(--grl);padding:3px;border-radius:9px}
-.htab{padding:6px 18px;border-radius:7px;border:none;background:transparent;font-size:13px;font-weight:500;color:var(--gr);cursor:pointer}
-.htab.on{background:var(--wh);font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.htab{padding:6px 18px;border-radius:0;border:none;border-bottom:3px solid transparent;background:transparent;font-size:13px;font-weight:500;color:var(--gr);cursor:pointer}
+.htab.on{border-bottom:3px solid #1976d2;font-weight:600}
 .gchip{display:flex;align-items:center;gap:8px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600}
 .gdot{width:8px;height:8px;border-radius:50%}
 .view{display:none}
@@ -38,34 +39,38 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
 .search-box input{width:100%;padding:10px 14px;border:1.5px solid var(--bo);border-radius:9px;font-size:13px;outline:none;transition:all .2s ease;box-shadow:0 1px 3px rgba(0,0,0,.05)}
 .search-box input:focus{border-color:var(--vd);box-shadow:0 2px 8px rgba(0,146,70,.15)}
 .btn-add{padding:10px 18px;background:linear-gradient(135deg,var(--vd),#00a854);color:var(--wh);border:none;border-radius:9px;font-weight:600;cursor:pointer;box-shadow:0 2px 8px rgba(0,146,70,.25);transition:all .2s ease;display:flex;align-items:center;gap:4px}
-.btn-add:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,146,70,.35);background:linear-gradient(135deg,#00a854,var(--vd))}
-.btn-add:active{transform:translateY(0);box-shadow:0 1px 4px rgba(0,146,70,.2)}
-.table-wrap{background:var(--wh);border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);border:1px solid var(--bo);overflow:hidden;overflow-x:auto}
+.btn-add:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,146,70,.35)}
+.table-wrap{background:white;border:1px solid #e0e0e0;overflow:hidden;overflow-x:auto}
 .actas-table{width:100%;border-collapse:collapse;min-width:1200px}
-.actas-table thead{background:var(--grl)}
-.actas-table th{padding:12px 16px;font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;text-align:left;border-bottom:1px solid var(--bo)}
-.actas-table td{padding:12px 16px;border-bottom:1px solid var(--grl);font-size:13px}
-.actas-table tbody tr:hover{background:#e8efff}
-.tipo-badge{display:inline-block;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:600}
+.actas-table thead tr{background:#f5f5f5;border-bottom:2px solid #d0d0d0}
+.actas-table th{padding:12px 10px;font-size:11px;font-weight:600;color:#333;text-align:left;border-right:1px solid #e0e0e0;border-bottom:2px solid #d0d0d0;background:#f5f5f5}
+.actas-table th:last-child{border-right:none}
+.actas-table tbody tr{border-bottom:1px solid #e0e0e0}
+.actas-table tbody tr:hover{background:#f9f9f9}
+.actas-table tbody tr:nth-child(even){background:#fafafa}
+.actas-table tbody tr:nth-child(even):hover{background:#f5f5f5}
+.actas-table td{padding:10px;border-bottom:1px solid #e0e0e0;border-right:1px solid #ececec;font-size:12px;color:#333;vertical-align:middle}
+.actas-table td:last-child{border-right:none}
+.tipo-badge{display:inline-block;padding:4px 10px;border-radius:3px;font-size:11px;font-weight:600}
 .tipo-nacimiento{background:var(--vdl);color:#065f46}
 .tipo-matrimonio{background:#fce7f3;color:#831843}
 .tipo-defuncion{background:#fef3c7;color:#78350f}
 .tipo-bautismo{background:#dbeafe;color:#1e40af}
 .btn-actions{display:flex;gap:6px;flex-wrap:wrap}
-.btn-edit,.btn-del,.btn-finalizar,.btn-proceso{padding:6px 12px;border:1px solid var(--bo);border-radius:6px;font-size:12px;cursor:pointer}
+.btn-edit,.btn-del,.btn-finalizar,.btn-proceso{padding:6px 10px;border:1px solid var(--bo);border-radius:3px;font-size:11px;cursor:pointer;font-weight:500}
 .btn-edit{background:transparent;color:var(--gr)}
 .btn-edit:hover{background:#e8efff;border-color:var(--az);color:var(--az)}
 .btn-del{background:transparent;color:var(--gr)}
 .btn-del:hover{background:var(--rol);border-color:var(--ro);color:var(--ro)}
 .btn-finalizar{background:var(--vdl);color:var(--vd);font-weight:600;border-color:var(--vd)}
 .btn-proceso{background:var(--aml);color:var(--am);font-weight:600;border-color:var(--am)}
-.imperio-badge{display:inline-flex;gap:4px;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;background:#fef3c7;color:#78350f;border:1.5px solid #fcd34d;margin-left:6px}
+.imperio-badge{display:inline-flex;gap:4px;padding:2px 6px;border-radius:2px;font-size:9px;font-weight:700;background:#fef3c7;color:#78350f;border:1.5px solid #fcd34d;margin-left:4px}
 .imperio-badge::before{content:"⚠️"}
 .pagination{display:flex;justify-content:center;gap:8px;margin-top:20px;padding:16px}
 .page-btn{padding:6px 12px;border:1px solid var(--bo);border-radius:6px;background:var(--wh);font-size:12px;cursor:pointer}
 .page-btn.active{background:var(--az);color:var(--wh)}
-.editable-row input,.editable-row select{padding:6px 8px;border:1px solid var(--bo);border-radius:5px;font-size:12px;width:100%}
-.editable-row input:focus,.editable-row select:focus{outline:none;border-color:var(--vd);box-shadow:0 0 0 2px rgba(0,146,70,.1)}
+.editable-row input,.editable-row select{padding:6px 8px;border:1px solid #d0d0d0;border-radius:2px;font-size:12px;width:100%}
+.editable-row input:focus,.editable-row select:focus{outline:none;border-color:#1976d2;box-shadow:0 0 0 1px #1976d2}
 .panel-euros{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:20px}
 .comuna-card{background:var(--wh);border:1px solid var(--bo);border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:all .2s ease}
 .comuna-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.1);transform:translateY(-2px)}
@@ -80,172 +85,34 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
 .btn-toggle.activo{background:var(--am);color:var(--wh);border-color:var(--am)}
 .btn-toggle.inactivo{background:var(--gr);color:var(--wh);border-color:var(--gr)}
 .input-nueva-comuna{padding:12px;border:1.5px solid var(--bo);border-radius:9px;font-size:14px;margin-bottom:12px;width:100%;max-width:400px}
-.solicitante-badge{display:inline-block;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;color:#fff}
-.sol-belen{background:#E91E63}
-.sol-german{background:#2196F3}
-.sol-pau{background:#FF9800}
-.sol-male{background:#9C27B0}
-.sol-lucas{background:#4CAF50}
-.sol-sofia{background:#00BCD4}
-.sol-yael{background:#FFC107;color:#333}
-.sol-flor{background:#E91E63}
-.sol-brian{background:#795548}
-.sol-camila{background:#FF5722}
-.sol-aldana{background:#607D8B}
-.sol-malena{background:#9C27B0;color:#fff}
-.sol-nico{background:#2196F3;color:#fff}
-.sol-paula{background:#FF9800;color:#fff}
+.solicitante-badge{display:inline-block;padding:4px 10px;border-radius:3px;font-size:10px;font-weight:700;letter-spacing:0.5px;color:#fff}
+.sol-belen{background:#E91E63}.sol-german{background:#2196F3}.sol-pau{background:#FF9800}
+.sol-male{background:#9C27B0}.sol-lucas{background:#4CAF50}.sol-sofia{background:#00BCD4}
+.sol-yael{background:#FFC107;color:#333}.sol-flor{background:#E91E63}.sol-brian{background:#795548}
+.sol-camila{background:#FF5722}.sol-aldana{background:#607D8B}.sol-malena{background:#9C27B0}
+.sol-nico{background:#2196F3}.sol-paula{background:#FF9800}
 
-/* DISEÑO LINEAL Y ORDENADO */
-.container {
-    background: #ffffff !important;
-    padding: 0 !important;
-    max-width: 100% !important;
-}
+/* Toast de estado */
+.toast{position:fixed;bottom:24px;right:24px;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:600;color:#fff;z-index:9999;opacity:0;transition:opacity .3s ease;pointer-events:none}
+.toast.show{opacity:1}
+.toast.ok{background:#009246}
+.toast.err{background:#CE2B37}
+.toast.loading{background:#64748b}
 
-.table-wrap {
-    background: white !important;
-    border-radius: 0 !important;
-    padding: 0 !important;
-    box-shadow: none !important;
-    border: 1px solid #e0e0e0 !important;
-}
-
-.actas-table {
-    border-radius: 0 !important;
-    border-collapse: collapse !important;
-    box-shadow: none !important;
-    width: 100% !important;
-}
-
-.actas-table thead tr {
-    background: #f5f5f5 !important;
-    border-bottom: 2px solid #d0d0d0 !important;
-}
-
-.actas-table th {
-    padding: 12px 10px !important;
-    font-size: 11px !important;
-    letter-spacing: 0.3px !important;
-    font-weight: 600 !important;
-    color: #333 !important;
-    text-align: left !important;
-    border-right: 1px solid #e0e0e0 !important;
-    border-bottom: 2px solid #d0d0d0 !important;
-    background: #f5f5f5 !important;
-}
-
-.actas-table th:last-child {
-    border-right: none !important;
-}
-
-.actas-table tbody tr {
-    transition: none !important;
-    border-bottom: 1px solid #e0e0e0 !important;
-}
-
-.actas-table tbody tr:hover {
-    background: #f9f9f9 !important;
-    transform: none !important;
-    box-shadow: none !important;
-}
-
-.actas-table tbody tr:nth-child(even) {
-    background: #fafafa !important;
-}
-
-.actas-table tbody tr:nth-child(even):hover {
-    background: #f5f5f5 !important;
-}
-
-.actas-table td {
-    padding: 10px !important;
-    border-bottom: 1px solid #e0e0e0 !important;
-    border-right: 1px solid #ececec !important;
-    font-size: 12px !important;
-    color: #333 !important;
-    vertical-align: middle !important;
-}
-
-.actas-table td:last-child {
-    border-right: none !important;
-}
-
-.solicitante-badge {
-    padding: 4px 10px !important;
-    border-radius: 3px !important;
-    font-size: 10px !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.5px !important;
-    box-shadow: none !important;
-}
-
-.type-badge {
-    padding: 4px 10px !important;
-    border-radius: 3px !important;
-    font-weight: 600 !important;
-    font-size: 11px !important;
-    box-shadow: none !important;
-}
-
-.btn-edit, .btn-del, .btn-finalizar {
-    padding: 6px 10px !important;
-    border-radius: 3px !important;
-    font-weight: 500 !important;
-    box-shadow: none !important;
-    transition: background-color 0.15s !important;
-    font-size: 11px !important;
-}
-
-.btn-edit:hover, .btn-del:hover {
-    transform: none !important;
-    box-shadow: none !important;
-}
-
-.notas-cell {
-    font-size: 12px !important;
-    line-height: 1.5 !important;
-    color: #444 !important;
-}
-
-.imperio-badge {
-    font-size: 9px !important;
-    padding: 2px 6px !important;
-    border-radius: 2px !important;
-    margin-left: 4px !important;
-}
-
-/* Header más limpio */
-.hdr {
-    border-bottom: 2px solid #e0e0e0 !important;
-    box-shadow: none !important;
-}
-
-.htab {
-    border-radius: 0 !important;
-    border-bottom: 3px solid transparent !important;
-}
-
-.htab.on {
-    border-bottom: 3px solid #1976d2 !important;
-    background: transparent !important;
-}
-
-/* Inputs y selects más limpios */
-.editable-row input, .editable-row select {
-    border: 1px solid #d0d0d0 !important;
-    border-radius: 2px !important;
-    padding: 6px 8px !important;
-}
-
-.editable-row input:focus, .editable-row select:focus {
-    border-color: #1976d2 !important;
-    box-shadow: 0 0 0 1px #1976d2 !important;
-}
-
+/* Loading overlay */
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:12px;font-size:14px;color:#64748b}
+.spinner{width:36px;height:36px;border:3px solid #e2e8f0;border-top-color:#003399;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <span>Cargando actas desde Supabase...</span>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <header class="hdr">
 <div class="hdr-in">
@@ -253,12 +120,8 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
 <div class="logo-banderas">
 <div class="bandera-italia"></div>
 <div class="bandera-ue">
-<span class="estrella-ue">★</span>
-<span class="estrella-ue">★</span>
-<span class="estrella-ue">★</span>
-<span class="estrella-ue">★</span>
-<span class="estrella-ue">★</span>
-<span class="estrella-ue">★</span>
+<span class="estrella-ue">★</span><span class="estrella-ue">★</span><span class="estrella-ue">★</span>
+<span class="estrella-ue">★</span><span class="estrella-ue">★</span><span class="estrella-ue">★</span>
 </div>
 </div>
 <div>
@@ -344,7 +207,6 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
 <div class="vbody">
 <h2 style="font-family:'DM Serif Display',serif;font-size:24px;margin-bottom:8px;color:#1e293b">💶 Comunas que piden Euros</h2>
 <p style="color:var(--gr);margin-bottom:24px;font-size:14px">Gestiona qué comunas cobran en euros por las actas</p>
-
 <div class="toolbar">
 <input type="text" class="input-nueva-comuna" id="input-nueva-comuna" placeholder="✚ Agregar nueva comuna (ej: Roma, Milán...)">
 <button class="btn-add" onclick="agregarComuna()">
@@ -352,125 +214,228 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
 <span style="font-weight:700">Agregar Comuna</span>
 </button>
 </div>
-
 <div class="panel-euros" id="panel-comunas-euros"></div>
 </div>
 </div>
 
 <script>
-const PP=20;
-let V='proceso';
-let D={proceso:[],finalizados:[],comunas:[]};
-let F={proceso:[],finalizados:[]};
-let P={proceso:1,finalizados:1};
-let editMode={};
+// =============================================
+// CONFIGURACIÓN SUPABASE
+// =============================================
+const SUPABASE_URL = 'https://gcbmsbkkzodmszrqtdfb.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_8DaoozfaLFtaYjwa220GpQ_jAhj_BkB';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ===== DATOS INICIALES CARGADOS DESDE EXCEL =====
-const DATOS_INICIALES = {"proceso":[{"id":1000,"fecha":"2021-07-15","persona":"LUIGI BOGLIOLO","solicitante":"BELEN","parentesco":"","avo":"LUIGI BOGLIOLO","tipo":"Nacimiento","comuna":"ACQUI TERME","notas":"","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"BELEN"},{"id":1001,"fecha":"2021-08-26","persona":"FRANCHESCO LUIGI CONTARELLI","solicitante":"BELEN","parentesco":"","avo":"FRANCHESCO LUIGI CONTARELLI","tipo":"Nacimiento","comuna":"SAN LUCIDO","notas":"B5/12","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"BELEN"},{"id":1002,"fecha":"2021-08-26","persona":"MILAN SLAVEC","solicitante":"BELEN","parentesco":"","avo":"MILAN SLAVEC","tipo":"Nacimiento","comuna":"TRIESTE","notas":"figura que no hay registro en trieste","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"BELEN"},{"id":1003,"fecha":"2021-08-26","persona":"MATRIMONIO: CON ALBINA FRANKOVIC EN COMUNA DE NAPOLI EL 23/11/1948","solicitante":"ALDANA","parentesco":"","avo":"MATRIMONIO: CON ALBINA FRANKOVIC EN COMUNA DE NAPOLI EL 23/11/1948","tipo":"Nacimiento","comuna":"PIAGGINE","notas":"B8/1","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"ALDANA"},{"id":1004,"fecha":"2021-09-08","persona":"GIUSEPPE PETRONE","solicitante":"BELEN","parentesco":"","avo":"GIUSEPPE PETRONE","tipo":"Nacimiento","comuna":"PIGNOLA","notas":"(con el clientes nos tiramos el lance porque la comuna segun actas dice VIÑOLES y no existe nada parecido)","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"BELEN"},{"id":1005,"fecha":"2021-09-27","persona":"ANTONIO FERRANDO","solicitante":"BELEN","parentesco":"","avo":"ANTONIO FERRANDO","tipo":"Nacimiento","comuna":"GENOVA","notas":"Foto del acta. Pero también figura que es Comuna de Voltri","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"BELEN"},{"id":1006,"fecha":"2021-10-05","persona":"PATRICIO LUCCHINI","solicitante":"FLOR","parentesco":"","avo":"PATRICIO LUCCHINI","tipo":"Nacimiento","comuna":"SORBO SAN BASILE","notas":"Parece que también se casaron allá pero no sabemos comuna","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"FLOR"},{"id":1007,"fecha":"2021-10-15","persona":"Valentín ambrosio","solicitante":"BELEN","parentesco":"","avo":"Valentín ambrosio","tipo":"Nacimiento","comuna":"SAN PAOLO DI JESI","notas":"B31/1","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"BELEN"},{"id":1008,"fecha":"2021-10-18","persona":"Don Miguel Giuliano","solicitante":"LUCAS","parentesco":"","avo":"Don Miguel Giuliano","tipo":"Nacimiento","comuna":"BONIFATI, Cosenza","notas":"b15/10","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1009,"fecha":"2022-01-21","persona":"GIUSEPPE GRASSO","solicitante":"LUCAS","parentesco":"","avo":"GIUSEPPE GRASSO","tipo":"Nacimiento","comuna":"FUSCALDO ó TERRANOVA DA SIBARI (BUSCAR EN LAS DOS)","notas":"B31-5 TERRANOVA","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1010,"fecha":"2022-02-10","persona":"FRANCISCO GARBACCIO","solicitante":"PAU","parentesco":"","avo":"FRANCISCO GARBACCIO","tipo":"Nacimiento","comuna":"NOVARA (PIEMONTE)","notas":"NEGATIVA DESDE NOVARA","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1011,"fecha":"2022-02-22","persona":"GIOVANNI RAFFAELE MARIO ROSSAROLI","solicitante":"PAU","parentesco":"","avo":"GIOVANNI RAFFAELE MARIO ROSSAROLI","tipo":"Nacimiento","comuna":"BORGO PRIOLO (PAVIA)","notas":"B31/10","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1012,"fecha":"2022-02-23","persona":"PAULA MARIA PLATE CON MARIANO CORDOBA USTARIZ","solicitante":"LUCAS","parentesco":"","avo":"PAULA MARIA PLATE CON MARIANO CORDOBA USTARIZ","tipo":"Nacimiento","comuna":"MILANO, Provincia de Milan.","notas":"SUSPENDIDA HASTA NUEVOS DATOS DEL CLIENTE","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1013,"fecha":"2022-03-03","persona":"ANNIBALE ROMITELLI PERLA","solicitante":"LUCAS","parentesco":"","avo":"ANNIBALE ROMITELLI PERLA","tipo":"Nacimiento","comuna":"MONTEFIASCONE, provincia de Viterbo.","notas":"BMARZO","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1014,"fecha":"2022-03-08","persona":"ALEJANDRO ANTONELLI","solicitante":"LUCAS","parentesco":"","avo":"ALEJANDRO ANTONELLI","tipo":"Nacimiento","comuna":"MAGGIORA, provincia de Novara","notas":"B5/12","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1015,"fecha":"2022-03-18","persona":"ROSASCO GIOBATTA","solicitante":"BELEN","parentesco":"","avo":"ROSASCO GIOBATTA","tipo":"Nacimiento","comuna":"GENOVA (GENOVA)","notas":"negativa desde la comuna año 1882","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"BELEN"},{"id":1016,"fecha":"2022-03-30","persona":"CRESCINI, IACOPO FILIPPO CESAREO","solicitante":"PAU","parentesco":"","avo":"CRESCINI, IACOPO FILIPPO CESAREO","tipo":"Nacimiento","comuna":"PONTREMOLI (MASSA CARRARA)","notas":"EN LA MAYORIA DE LAS ACTAS ESTA COMO CRESCINI CESAR O CESAREO","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1017,"fecha":"2022-04-06","persona":"SOLDI PUBLIO","solicitante":"PAU","parentesco":"","avo":"SOLDI PUBLIO","tipo":"Nacimiento","comuna":"ROMA, ROMA","notas":"HAY FOTO DE ACTA","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1018,"fecha":"2022-04-11","persona":"VIRGILIO MARIA FOGAGNOLO","solicitante":"LUCAS","parentesco":"","avo":"VIRGILIO MARIA FOGAGNOLO","tipo":"Nacimiento","comuna":"Costa di Rovigo","notas":"B31/10","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1019,"fecha":"2022-04-12","persona":"VALERIANI NAZZARENO CON BERTO ADELE","solicitante":"BELEN","parentesco":"","avo":"VALERIANI NAZZARENO CON BERTO ADELE","tipo":"Nacimiento","comuna":"MONTELUPONE","notas":"BMARZO","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"BELEN"},{"id":1020,"fecha":"2022-07-05","persona":"JUAN BAUTISTA PEDRO JOSE PIAZZA","solicitante":"BELEN","parentesco":"","avo":"JUAN BAUTISTA PEDRO JOSE PIAZZA","tipo":"Nacimiento","comuna":"SESTRI LEVANTE (GENOVA)","notas":"APARECE COMO JUAN EN TODOS LADOS PERO EN ALGUN LUGAR EL CLIENTE ENCONTRO TODOS ESOS NOMBRES TAMBIEN","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"BELEN"},{"id":1021,"fecha":"2022-07-21","persona":"GIORGIO SABATINO","solicitante":"LUCAS","parentesco":"","avo":"GIORGIO SABATINO","tipo":"Nacimiento","comuna":"Comune di COSENZA","notas":"BMARZO","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1022,"fecha":"2022-09-01","persona":"SILVANA ASUNTA MIGLIANO","solicitante":"LUCAS","parentesco":"","avo":"SILVANA ASUNTA MIGLIANO","tipo":"Nacimiento","comuna":"COSENZA, Calabria","notas":"NEGATIVA EN COSENZA","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1023,"fecha":"2022-09-16","persona":"PIETRO VALERGA/BALERGA","solicitante":"LUCAS","parentesco":"","avo":"PIETRO VALERGA/BALERGA","tipo":"Nacimiento","comuna":"SAVONA","notas":"","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1024,"fecha":"2022-09-16","persona":"FELIPE PINO","solicitante":"LUCAS","parentesco":"","avo":"FELIPE PINO","tipo":"Nacimiento","comuna":"GIARRE, Catania","notas":"BMARZO","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1025,"fecha":"2022-09-16","persona":"PIETRO CAMPASSO","solicitante":"LUCAS","parentesco":"","avo":"PIETRO CAMPASSO","tipo":"Nacimiento","comuna":"TURIN","notas":"B1/1/24","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1026,"fecha":"2022-09-26","persona":"ROMOLO RUFO","solicitante":"LUCAS","parentesco":"","avo":"ROMOLO RUFO","tipo":"Nacimiento","comuna":"ROMA","notas":"B15/7","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1027,"fecha":"2022-09-30","persona":"LUIGI GAETANO BERRA","solicitante":"LUCAS","parentesco":"","avo":"LUIGI GAETANO BERRA","tipo":"Nacimiento","comuna":"Comune di NOVARA","notas":"CANCELADA HASTA NUEVOS DATOS POR EL CLIENTE","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1028,"fecha":"2022-11-01","persona":"GIOVANNI IACCARINO","solicitante":"LUCAS","parentesco":"","avo":"GIOVANNI IACCARINO","tipo":"Nacimiento","comuna":"NAPOLI","notas":"NEGATIVAS DESDE NAPOLI","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1029,"fecha":"2022-11-01","persona":"GIOVANNI IACCARINO","solicitante":"LUCAS","parentesco":"","avo":"GIOVANNI IACCARINO","tipo":"Nacimiento","comuna":"NAPOLI","notas":"CANCELADA HASTA NUEVOS DATOS POR EL CLIENTE","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1030,"fecha":"2022-11-01","persona":"Giovanni Bautista Treccani","solicitante":"PAU","parentesco":"","avo":"Giovanni Bautista Treccani","tipo":"Nacimiento","comuna":"Di leno, Brescia","notas":"B1/1/24","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1031,"fecha":"2022-11-25","persona":"GUGLIELMO PERNICE","solicitante":"PAU","parentesco":"","avo":"GUGLIELMO PERNICE","tipo":"Nacimiento","comuna":"CIVITAVECCHIA (ROMA)","notas":"Chequear whatsapp, es para averiguar si la comuna tiene las actas porque segun la familia se habian quemado los papeles.","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1032,"fecha":"2022-11-25","persona":"BORROMEO ROQUE","solicitante":"PAU","parentesco":"","avo":"BORROMEO ROQUE","tipo":"Nacimiento","comuna":"ORTONA (CHIETTI)","notas":"B2/1","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1033,"fecha":"2022-11-29","persona":"Vicenzo/Vicente Simoncini","solicitante":"PAU","parentesco":"","avo":"Vicenzo/Vicente Simoncini","tipo":"Nacimiento","comuna":"Comunanza localidad de Castelfiorito, Ascoli Piceno, Marche","notas":"BMARZO","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1034,"fecha":"2022-12-05","persona":"ANTONIO VILLA","solicitante":"LUCAS","parentesco":"","avo":"ANTONIO VILLA","tipo":"Nacimiento","comuna":"MILÁN","notas":"negativa desde comunanza","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1035,"fecha":"2022-12-07","persona":"ANTONIO ALEMANI","solicitante":"LUCAS","parentesco":"","avo":"ANTONIO ALEMANI","tipo":"Nacimiento","comuna":"FERNO, provincia de Varese","notas":"BMARZO","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1036,"fecha":"2022-12-15","persona":"AMIGHINI CAMILO ALFREDO","solicitante":"PAU","parentesco":"","avo":"AMIGHINI CAMILO ALFREDO","tipo":"Nacimiento","comuna":"Pavia","notas":"B1/1/24","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1037,"fecha":"2022-12-22","persona":"BERTOLINO AMBROGIO","solicitante":"PAU","parentesco":"","avo":"BERTOLINO AMBROGIO","tipo":"Nacimiento","comuna":"VALLE LOMELLINA, PAVIA","notas":"BMAYO","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1038,"fecha":"2023-01-02","persona":"BERTOLINO AMBROGIO Y CAMPANINO LUIGIA","solicitante":"PAU","parentesco":"","avo":"BERTOLINO AMBROGIO Y CAMPANINO LUIGIA","tipo":"Nacimiento","comuna":"VALLE LOMELLINA, PAVIA","notas":"Hay foto. Parte 1 Acta N° 30","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1039,"fecha":"2023-01-02","persona":"Raffa Francisco","solicitante":"PAU","parentesco":"","avo":"Raffa Francisco","tipo":"Nacimiento","comuna":"Zungri, Vivo Valentia","notas":"BMAYO","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1040,"fecha":"2023-01-04","persona":"GIOVANNI BATISTA CALDERONI","solicitante":"PAU","parentesco":"","avo":"GIOVANNI BATISTA CALDERONI","tipo":"Nacimiento","comuna":"LERMA (ALESSANDRIA)","notas":"BMAYO","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1041,"fecha":"2023-01-18","persona":"PRINCIPE AUGUSTO GIUSEPPE","solicitante":"PAU","parentesco":"","avo":"PRINCIPE AUGUSTO GIUSEPPE","tipo":"Nacimiento","comuna":"ROCCABASCERANA, AVELLINO","notas":"BMAYO","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1042,"fecha":"2023-02-15","persona":"PRINCIPE AUGUSTO GIUSEPPE Y PRINCIPE FELICIANA","solicitante":"PAU","parentesco":"","avo":"PRINCIPE AUGUSTO GIUSEPPE Y PRINCIPE FELICIANA","tipo":"Nacimiento","comuna":"ROCCABASCERANA, AVELLINO","notas":"HAY FOTO PARTE I SERIE 13","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1043,"fecha":"2023-02-15","persona":"GEROLAMO TOLENTI","solicitante":"LUCAS","parentesco":"","avo":"GEROLAMO TOLENTI","tipo":"Nacimiento","comuna":"GENOVA (Cittá Metropolitana di Genova)","notas":"B31-3","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1044,"fecha":"2023-02-27","persona":"SALVADOR DI MASSA Y MARIA CONCETTA DI IORIO","solicitante":"PAU","parentesco":"","avo":"SALVADOR DI MASSA Y MARIA CONCETTA DI IORIO","tipo":"Nacimiento","comuna":"Casamicciola Terme","notas":"B31-3","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1045,"fecha":"2023-03-15","persona":"RIBOTTA FRANCESCO","solicitante":"PAU","parentesco":"","avo":"RIBOTTA FRANCESCO","tipo":"Nacimiento","comuna":"BARGE, CUNEO","notas":"ATTO N° 70 P I","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1046,"fecha":"2023-03-29","persona":"RIBOTTA FRANCESCO Y FERRERO MARIA LUIGIA","solicitante":"PAU","parentesco":"","avo":"RIBOTTA FRANCESCO Y FERRERO MARIA LUIGIA","tipo":"Nacimiento","comuna":"LUSERNA S. GIOVANNI","notas":"B31-7","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1047,"fecha":"2023-03-29","persona":"FERRERO MARIA LUIGIA","solicitante":"PAU","parentesco":"","avo":"FERRERO MARIA LUIGIA","tipo":"Nacimiento","comuna":"BARGE, CUNEO","notas":"B31/3/25","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1048,"fecha":"2023-03-29","persona":"RIBOTTA FRANCESCO Y MULATERO TERESA","solicitante":"PAU","parentesco":"","avo":"RIBOTTA FRANCESCO Y MULATERO TERESA","tipo":"Nacimiento","comuna":"BARGE, CUNEO","notas":"BMAYO","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1049,"fecha":"2023-03-29","persona":"PAOLETTA DAVIDE","solicitante":"PAU","parentesco":"","avo":"PAOLETTA DAVIDE","tipo":"Nacimiento","comuna":"ACCADIA, FOGGIA","notas":"BMAYO","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1050,"fecha":"2023-03-29","persona":"PAOLETTA DAVIDE Y LAMBARELLI LUCIA","solicitante":"PAU","parentesco":"","avo":"PAOLETTA DAVIDE Y LAMBARELLI LUCIA","tipo":"Nacimiento","comuna":"ACCADIA, FOGGIA","notas":"HAY FOTO ACTA 8 PARTE I SERIE A","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1051,"fecha":"2023-03-29","persona":"EUGENIO CAMISCIA","solicitante":"PAU","parentesco":"","avo":"EUGENIO CAMISCIA","tipo":"Nacimiento","comuna":"CHIETI, CHIETI","notas":"b1-9-24","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1052,"fecha":"2023-04-04","persona":"ANTONIO MARINARO","solicitante":"LUCAS","parentesco":"","avo":"ANTONIO MARINARO","tipo":"Nacimiento","comuna":"TRANI, provincia de Bari (hoy llamada Barletta-Andria-Trani)","notas":"","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1053,"fecha":"2023-04-17","persona":"ANTONIO MARINARO con TERESA ALOI","solicitante":"LUCAS","parentesco":"","avo":"ANTONIO MARINARO con TERESA ALOI","tipo":"Nacimiento","comuna":"GIOIA TAURO, provincia de Reggio Calabria","notas":"","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1054,"fecha":"2023-04-17","persona":"ANGELO FRANCESCO GIUSTI","solicitante":"LUCAS","parentesco":"","avo":"ANGELO FRANCESCO GIUSTI","tipo":"Nacimiento","comuna":"RENDE, provincia de Cosenza","notas":"n°249 parte I","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1055,"fecha":"2023-04-19","persona":"PASCUAL PONZIO","solicitante":"PAU","parentesco":"","avo":"PASCUAL PONZIO","tipo":"Nacimiento","comuna":"SENISE, POTENZA","notas":"B1-6","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1056,"fecha":"2023-05-09","persona":"PASCUAL PONZIO Y MARIA GIUSEPPA FILOMENA LUPIA","solicitante":"PAU","parentesco":"","avo":"PASCUAL PONZIO Y MARIA GIUSEPPA FILOMENA LUPIA","tipo":"Nacimiento","comuna":"SENISE, POTENZA","notas":"la comuna no la tiene por el año, pedida a la diocesi y tribunales","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1057,"fecha":"2023-05-09","persona":"JORGE EDUARDO ZOANI","solicitante":"LUCAS","parentesco":"","avo":"JORGE EDUARDO ZOANI","tipo":"Nacimiento","comuna":"JUICIO EN ROMA. El AVO fue ANGELO VINCENZO MARIA FURLOTTI nacido en la comuna de FONTANELLATO, provincia di Parma","notas":"B1-6","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1058,"fecha":"2023-05-12","persona":"JORGE EDUARDO ZOANI","solicitante":"LUCAS","parentesco":"","avo":"JORGE EDUARDO ZOANI","tipo":"Nacimiento","comuna":"JUICIO EN ROMA. El AVO fue ANGELO VINCENZO MARIA FURLOTTI nacido en la comuna de FONTANELLATO, provincia di Parma","notas":"MATRIMONIO ARGENTINO ADJUNTADO AL MAIL GER","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1059,"fecha":"2023-05-12","persona":"PORCHETTO LORENZO","solicitante":"PAU","parentesco":"","avo":"PORCHETTO LORENZO","tipo":"Nacimiento","comuna":"COGOLETO GENOVA","notas":"ATTO 1741","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1060,"fecha":"2023-05-23","persona":"Calandri Giovanni con Margherita Lovira/Giovera","solicitante":"PAU","parentesco":"","avo":"Calandri Giovanni con Margherita Lovira/Giovera","tipo":"Nacimiento","comuna":"Bene Vagienna","notas":"NEGATIVO DE LA COMUNA","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1061,"fecha":"2023-06-14","persona":"VINCENZO CAMARDA","solicitante":"PAU","parentesco":"","avo":"VINCENZO CAMARDA","tipo":"Nacimiento","comuna":"MAMMOLA, REGGIO CALABRIA","notas":"b31-7","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1062,"fecha":"2023-06-28","persona":"RIZIERO NATALIO CAROSIO (variantes nombre ROVIERO/RISERIO/REGERO/REGIERO - variantes apellido CAROSSI/CAROSI)","solicitante":"LUCAS","parentesco":"","avo":"RIZIERO NATALIO CAROSIO (variantes nombre ROVIERO/RISERIO/REGERO/REGIERO - variantes apellido CAROSSI/CAROSI)","tipo":"Nacimiento","comuna":"NOVI LIGURE, Provincia de Alessandria","notas":"NEGATIVA DESDE LA COMUNA","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1063,"fecha":"2023-07-05","persona":"LUIGI GIGLIOTTI","solicitante":"LUCAS","parentesco":"","avo":"LUIGI GIGLIOTTI","tipo":"Nacimiento","comuna":"NICASTRO (hoy LAMEZIA/LAMEZIA TERME)","notas":"B1-9","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1064,"fecha":"2023-08-16","persona":"LUIGI GIGLIOTTI con FILOMENA GALLO","solicitante":"LUCAS","parentesco":"","avo":"LUIGI GIGLIOTTI con FILOMENA GALLO","tipo":"Nacimiento","comuna":"FEROLETO ANTICO, Catanzaro","notas":"B1-9","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1065,"fecha":"2023-08-16","persona":"STURLESE PIERPAOLO ETTORE","solicitante":"LUCAS","parentesco":"","avo":"STURLESE PIERPAOLO ETTORE","tipo":"Nacimiento","comuna":"GENOVA","notas":"FOTO N 519 PARTE 1 SERIE A","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1066,"fecha":"2023-08-25","persona":"ANGELO SILINGARDI","solicitante":"LUCAS","parentesco":"","avo":"ANGELO SILINGARDI","tipo":"Nacimiento","comuna":"ROMA ciudad","notas":"SUSPENDIDA POR NATURALIZACION","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1067,"fecha":"2023-08-31","persona":"NICOLA CAPODANNO","solicitante":"PAU","parentesco":"","avo":"NICOLA CAPODANNO","tipo":"Nacimiento","comuna":"Civitaluparella, Chietti","notas":"B6/10","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1068,"fecha":"2023-09-08","persona":"DONATO MORETTI","solicitante":"LUCAS","parentesco":"","avo":"DONATO MORETTI","tipo":"Nacimiento","comuna":"SANTO SPIRITO, Bari","notas":"B6/10","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1069,"fecha":"2023-09-26","persona":"MARIO PAGELLA","solicitante":"LUCAS","parentesco":"","avo":"MARIO PAGELLA","tipo":"Nacimiento","comuna":"TORTONA, Alessandria","notas":"B31-10","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1070,"fecha":"2023-10-20","persona":"Pascual Bonasso","solicitante":"PAU","parentesco":"","avo":"Pascual Bonasso","tipo":"Nacimiento","comuna":"Savelli, Crotona, Calabria","notas":"EN EL MATRIMONIO DECLARON QUE PERTENECIA A CATANZARO","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1071,"fecha":"2023-10-25","persona":"IVO COLOMBINI","solicitante":"LUCAS","parentesco":"","avo":"IVO COLOMBINI","tipo":"Nacimiento","comuna":"SOLIGNANO, provincia de Parma","notas":"B31-11","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1072,"fecha":"2023-11-22","persona":"LORENZO GARDELLA","solicitante":"LUCAS","parentesco":"","avo":"LORENZO GARDELLA","tipo":"Nacimiento","comuna":"ROCCATAGLIATA frazione di Comune di NEIRONA, provincia de GENOVA","notas":"DOS COPIAS porfa !!!","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1073,"fecha":"2023-11-27","persona":"ZANELLO EMILIO","solicitante":"PAU","parentesco":"","avo":"ZANELLO EMILIO","tipo":"Nacimiento","comuna":"TALMASSONS, UDINE","notas":"B31-11","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1074,"fecha":"2023-11-30","persona":"Juan Giacomazzi","solicitante":"BELEN","parentesco":"","avo":"Juan Giacomazzi","tipo":"Nacimiento","comuna":"Treviso Castelfranco","notas":"NEGATIVA DESDE LA COMUNA","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"BELEN"},{"id":1075,"fecha":"2023-12-05","persona":"GIOVANNI MORGANTI","solicitante":"LUCAS","parentesco":"","avo":"GIOVANNI MORGANTI","tipo":"Nacimiento","comuna":"MASSA, provincia de Massa Carrara","notas":"B31/12","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1076,"fecha":"2023-12-27","persona":"CAGGIANO ANTONIO","solicitante":"PAU","parentesco":"","avo":"CAGGIANO ANTONIO","tipo":"Nacimiento","comuna":"TAURASI, AVELLINO","notas":"B9/2/24","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1077,"fecha":"2024-01-29","persona":"GIUSEPPE GUARNIERI","solicitante":"LUCAS","parentesco":"","avo":"GIUSEPPE GUARNIERI","tipo":"Nacimiento","comuna":"Comuna de NAPOLES (el barrio se llama VICARIA).","notas":"","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1078,"fecha":"2024-03-12","persona":"GENNARO SEMINARA","solicitante":"LUCAS","parentesco":"","avo":"GENNARO SEMINARA","tipo":"Nacimiento","comuna":"IOPPOLO, Catanzaro","notas":"B31-3-24","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1079,"fecha":"2024-03-15","persona":"GENNARO SEMINARA con CATERINA GENNARO","solicitante":"LUCAS","parentesco":"","avo":"GENNARO SEMINARA con CATERINA GENNARO","tipo":"Nacimiento","comuna":"SPILINGA, Catanzaro","notas":"hay foto de un estratto pero no da fecha exacta, solo año y n° de acta","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1080,"fecha":"2024-03-15","persona":"PASQUALE PERGIOVANNI","solicitante":"PAU","parentesco":"","avo":"PASQUALE PERGIOVANNI","tipo":"Nacimiento","comuna":"MOLFETTA","notas":"FOTO ANTENATI","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1081,"fecha":"2024-03-21","persona":"ANTONIO LOVATO","solicitante":"LUCAS","parentesco":"","avo":"ANTONIO LOVATO","tipo":"Nacimiento","comuna":"VALDAGNO, Vicenza","notas":"","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1082,"fecha":"2024-03-22","persona":"ANTONIO LOVATO con ANGELICA GRIGOLATO","solicitante":"LUCAS","parentesco":"","avo":"ANTONIO LOVATO con ANGELICA GRIGOLATO","tipo":"Nacimiento","comuna":"VALDAGNO, Vicenza","notas":"","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1083,"fecha":"2024-03-22","persona":"FRANCESCO GIUSEPPE MARTINO","solicitante":"LUCAS","parentesco":"","avo":"FRANCESCO GIUSEPPE MARTINO","tipo":"Nacimiento","comuna":"PINEROLO, Torino","notas":"Atto n°519 Anno 1866 comune Pinerolo","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1084,"fecha":"2024-04-08","persona":"GUALTERIO TEMPESTINI","solicitante":"LUCAS","parentesco":"","avo":"GUALTERIO TEMPESTINI","tipo":"Nacimiento","comuna":"barrio MONTI, en Roma (Iglesia Santa Maria Monti)","notas":"B15/5","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1085,"fecha":"2024-04-12","persona":"SALVATORE NASSISI o NASISI","solicitante":"LUCAS","parentesco":"","avo":"SALVATORE NASSISI o NASISI","tipo":"Nacimiento","comuna":"BASICO´, Messina","notas":"B15/5","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1086,"fecha":"2024-05-03","persona":"ANTONIO NATIELLO","solicitante":"LUCAS","parentesco":"","avo":"ANTONIO NATIELLO","tipo":"Nacimiento","comuna":"AULETTA, Salerno","notas":"Anno 1900","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1087,"fecha":"2024-05-13","persona":"Cesare/Cesar Benedeto Francisco Serenelli/Serenellini","solicitante":"PAU","parentesco":"","avo":"Cesare/Cesar Benedeto Francisco Serenelli/Serenellini","tipo":"Nacimiento","comuna":"Castelfidardo, Ancona","notas":"ger te sume las variantes de nombres que me sumo la clienta","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1088,"fecha":"2024-05-15","persona":"GIUSEPPE SCHICCHI","solicitante":"LUCAS","parentesco":"","avo":"GIUSEPPE SCHICCHI","tipo":"Nacimiento","comuna":"BELMONTE DEL SANNIO, Isernia (en esa epoca figura como BELMONTE provincia de Molise)","notas":"N°60 foglio 60","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1089,"fecha":"2024-06-11","persona":"RAFFAELE GRECO","solicitante":"LUCAS","parentesco":"","avo":"RAFFAELE GRECO","tipo":"Nacimiento","comuna":"FLORIDIA, Siracusa","notas":"B31-7","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1090,"fecha":"2024-07-11","persona":"RAFFAELE GRECO con MARIA CARDIA","solicitante":"LUCAS","parentesco":"","avo":"RAFFAELE GRECO con MARIA CARDIA","tipo":"Nacimiento","comuna":"MESSINA","notas":"B31-7","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1091,"fecha":"2024-07-11","persona":"Enrico Emilio Giuseppe Gatti","solicitante":"PAU","parentesco":"","avo":"Enrico Emilio Giuseppe Gatti","tipo":"Nacimiento","comuna":"Pontecurone, Alessandria","notas":"B31-7","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1092,"fecha":"2024-07-11","persona":"Vicente Juan Forciniti","solicitante":"PAU","parentesco":"","avo":"Vicente Juan Forciniti","tipo":"Nacimiento","comuna":"Calopezzati, Cosenza","notas":"AVISAR SI LA ENCUENTRAN, PORQUE VA A QUERER 1 COPIA MAS PARA ENVIAR A INGLATERRA","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1093,"fecha":"2024-07-17","persona":"DOMENICO BERTUCCIO","solicitante":"LUCAS","parentesco":"","avo":"DOMENICO BERTUCCIO","tipo":"Nacimiento","comuna":"IONADI, Vibo Valentia (al parecer hoy es Vibo Valentia, pero tiene papeles italianos donde dice que la prov es Catanzaro)","notas":"B31-7","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1094,"fecha":"2024-07-19","persona":"GIUSEPPA/GIUSEPPINA BELVIA","solicitante":"LUCAS","parentesco":"","avo":"GIUSEPPA/GIUSEPPINA BELVIA","tipo":"Nacimiento","comuna":"NICOSIA, Enna","notas":"","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1095,"fecha":"2024-07-29","persona":"DONATO MORETTI","solicitante":"LUCAS","parentesco":"","avo":"DONATO MORETTI","tipo":"Nacimiento","comuna":"BITONTO, Bari","notas":"B31-7","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1096,"fecha":"2024-08-02","persona":"Carmine Maria Mazzuca","solicitante":"PAU","parentesco":"","avo":"Carmine Maria Mazzuca","tipo":"Nacimiento","comuna":"San Benedetto Ullano, Cosenza","notas":"","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1097,"fecha":"2024-08-15","persona":"Carmine Maria Mazzuca y Angela Lores","solicitante":"PAU","parentesco":"","avo":"Carmine Maria Mazzuca y Angela Lores","tipo":"Nacimiento","comuna":"San Benedetto Ullano, Cosenza","notas":"","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1098,"fecha":"2024-08-15","persona":"Giuseppe Antonio Malvicino","solicitante":"PAU","parentesco":"","avo":"Giuseppe Antonio Malvicino","tipo":"Nacimiento","comuna":"Castelspina, Alessandria","notas":"8 PARTE 1","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1099,"fecha":"2024-08-15","persona":"GIOVANNI BATTISTA FABRO","solicitante":"PAU","parentesco":"","avo":"GIOVANNI BATTISTA FABRO","tipo":"Nacimiento","comuna":"FAGAGNA, UDINE","notas":"MANDE FOTO DEL ESTRATO X MAIL","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1100,"fecha":"2024-09-03","persona":"CARMELO ANTONIO ROSA","solicitante":"LUCAS","parentesco":"","avo":"CARMELO ANTONIO ROSA","tipo":"Nacimiento","comuna":"MENNAGIO, Como","notas":"NEGATIVA DESDE LA COMUNA","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1101,"fecha":"2024-09-03","persona":"SABATINO GUIDARELLI","solicitante":"LUCAS","parentesco":"","avo":"SABATINO GUIDARELLI","tipo":"Nacimiento","comuna":"MONDAVIO, Pesaro Urbino (frazione di Sant´Andrea di Suasa)","notas":"b31-9","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1102,"fecha":"2024-09-04","persona":"GIUSEPPE MARIA VOLPE","solicitante":"PAU","parentesco":"","avo":"GIUSEPPE MARIA VOLPE","tipo":"Nacimiento","comuna":"MONTESANO SULLA MARCELLANA, SALERNO","notas":"N° 98","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1103,"fecha":"2024-09-10","persona":"DOMENICO DE VITA","solicitante":"MALE","parentesco":"","avo":"DOMENICO DE VITA","tipo":"Nacimiento","comuna":"TROPEA, Vibo Valentia","notas":"b31-9","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1104,"fecha":"2024-09-23","persona":"ZANARDO FRANCESCO GIOVANNI","solicitante":"PAU","parentesco":"","avo":"ZANARDO FRANCESCO GIOVANNI","tipo":"Nacimiento","comuna":"MARENO DI PIAVE, TREVISO","notas":"N 55 PARTE 1","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1105,"fecha":"2024-09-27","persona":"GIUSEPPINA ROBORTELLA","solicitante":"LUCAS","parentesco":"","avo":"GIUSEPPINA ROBORTELLA","tipo":"Nacimiento","comuna":"SPINOSO, Potenza","notas":"b31-9","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1106,"fecha":"2024-10-01","persona":"SAMUEL TILLI","solicitante":"LUCAS","parentesco":"","avo":"SAMUEL TILLI","tipo":"Nacimiento","comuna":"MONTEFALCONE DEL SARNI, Campobasso","notas":"b31-9","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1107,"fecha":"2024-10-03","persona":"VITO FURCINITI con GIUSEPPINA ROCCA","solicitante":"LUCAS","parentesco":"","avo":"VITO FURCINITI con GIUSEPPINA ROCCA","tipo":"Nacimiento","comuna":"LAMEZIA TERME (frazione di Sambiase), CATANZARO","notas":"","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1108,"fecha":"2024-10-07","persona":"STRADA ORESTE GIUSEPPE CAMILLO","solicitante":"PAU","parentesco":"","avo":"STRADA ORESTE GIUSEPPE CAMILLO","tipo":"Nacimiento","comuna":"MILANO","notas":"N° 91 PARTE 1 SERIE C","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1109,"fecha":"2024-10-15","persona":"LEONARDO BASTONE","solicitante":"LUCAS","parentesco":"","avo":"LEONARDO BASTONE","tipo":"Nacimiento","comuna":"BOCCHIGLIERO, Cosenza","notas":"en mail titulado \"Fwd: Ciudadanía - Solicita CNE\" del 22/10/24 enviado a duttogerman@gmail.com está el comunicado del Consulado","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1110,"fecha":"2024-10-22","persona":"GIUSEPPE BASTONE (padre de Leonardo Bastone, el de la nascita de arriba)","solicitante":"LUCAS","parentesco":"","avo":"GIUSEPPE BASTONE (padre de Leonardo Bastone, el de la nascita de arriba)","tipo":"Nacimiento","comuna":"BOCCHIGLIERO, Cosenza","notas":"en mail titulado \"Fwd: Ciudadanía - Solicita CNE\" del 22/10/24 enviado a duttogerman@gmail.com está el comunicado del Consulado","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1111,"fecha":"2024-10-22","persona":"PEDIDO DEL CONSULADO: certificato di stato di famiglia (de Giuseppe)","solicitante":"LUCAS","parentesco":"","avo":"PEDIDO DEL CONSULADO: certificato di stato di famiglia (de Giuseppe)","tipo":"Nacimiento","comuna":"CORIGLIANO CALABRO, Cosenza","notas":"Atto n°347 parte 1 anno 1916","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1112,"fecha":"2024-10-24","persona":"FRANCESCO ROCCO AVELLA con PAOLINA PILLANI","solicitante":"LUCAS","parentesco":"","avo":"FRANCESCO ROCCO AVELLA con PAOLINA PILLANI","tipo":"Nacimiento","comuna":"CITTA DI ROMA","notas":"hay foto. Atto n°797 parte 2 serie A anno 1949","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1113,"fecha":"2024-10-24","persona":"Armando Arturo Oreste Martone","solicitante":"PAU","parentesco":"","avo":"Armando Arturo Oreste Martone","tipo":"Nacimiento","comuna":"Chiusano di San Domenico, Avellino","notas":"Encontramos acta en ANTENATI envio x mail","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1114,"fecha":"2024-10-24","persona":"CARLO BIGLIERI","solicitante":"LUCAS","parentesco":"","avo":"CARLO BIGLIERI","tipo":"Nacimiento","comuna":"CANTALUPO LIGURE, Alessandria","notas":"N°12 parte 1","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1115,"fecha":"2024-11-07","persona":"CARLO CALCAPRINA","solicitante":"LUCAS","parentesco":"","avo":"CARLO CALCAPRINA","tipo":"Nacimiento","comuna":"PIEVE DEL CAIRO, Pavia","notas":"B15/12/24","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1116,"fecha":"2024-11-07","persona":"EMILIO DI SALVO","solicitante":"LUCAS","parentesco":"","avo":"EMILIO DI SALVO","tipo":"Nacimiento","comuna":"TRIVENTO, Campobasso","notas":"","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1117,"fecha":"2024-11-08","persona":"Gordano  giulio cesare salvatore","solicitante":"BELEN","parentesco":"","avo":"Gordano  giulio cesare salvatore","tipo":"Nacimiento","comuna":"fagnano Castello","notas":"B15/12/24","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"BELEN"},{"id":1118,"fecha":"2024-11-13","persona":"PIETRO GIUFFRE","solicitante":"LUCAS","parentesco":"","avo":"PIETRO GIUFFRE","tipo":"Nacimiento","comuna":"MERI, Messina","notas":"cancelado por el cliente","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1119,"fecha":"2024-12-04","persona":"LEONARDO LAINE","solicitante":"LUCAS","parentesco":"","avo":"LEONARDO LAINE","tipo":"Nacimiento","comuna":"ALBIDONA, Cosenza","notas":"B15/12/24","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1120,"fecha":"2024-12-10","persona":"Domingo/Domenico Ferrari","solicitante":"PAU","parentesco":"","avo":"Domingo/Domenico Ferrari","tipo":"Nacimiento","comuna":"Onzo, Savona","notas":"Nicolás piensa que podrían existir registros de nacimientos guardados en la comune cercana de Albenga que entonces pertenecia a Onzo. Recomendo arrancar por Onzo.","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1121,"fecha":"2024-12-20","persona":"LUCIA VIRGILI con AUGUSTO GOMEZ YAÑEZ","solicitante":"LUCAS","parentesco":"","avo":"LUCIA VIRGILI con AUGUSTO GOMEZ YAÑEZ","tipo":"Nacimiento","comuna":"RACCONIGI, Cuneo","notas":"En Abril viajan a España, la quieren para residencia. En caso de que se encuentre el acta ellos estando allá, la mandariamos a España","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1122,"fecha":"2025-01-09","persona":"Eligio Carmine Verratti","solicitante":"PAU","parentesco":"","avo":"Eligio Carmine Verratti","tipo":"Nacimiento","comuna":"Larino, Campobasso","notas":"B6/3","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1123,"fecha":"2025-02-03","persona":"FIOVO TAVERNO BASSO","solicitante":"LUCAS","parentesco":"","avo":"FIOVO TAVERNO BASSO","tipo":"Nacimiento","comuna":"SANT´ELPIDIO A MARE, Fermo","notas":"B6/3","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1124,"fecha":"2025-02-06","persona":"Angelo Pignatelli","solicitante":"LUCAS","parentesco":"","avo":"Angelo Pignatelli","tipo":"Nacimiento","comuna":"CANDIDA, Avellino","notas":"B6/3","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1125,"fecha":"2025-02-10","persona":"Angelo Pignatelli y Lucia Biondi","solicitante":"LUCAS","parentesco":"","avo":"Angelo Pignatelli y Lucia Biondi","tipo":"Nacimiento","comuna":"CANDIDA, Avellino","notas":"","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1126,"fecha":"2025-02-10","persona":"LA TORRE ANTONIO","solicitante":"PAU","parentesco":"","avo":"LA TORRE ANTONIO","tipo":"Nacimiento","comuna":"SPILINGA","notas":"88 PARTE 1  ENVIO ACTA X MAIL YA LA PEDIMOS ANTERIORMENTE PARA LA TORRE MARCOS","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1127,"fecha":"2025-02-18","persona":"ANTONIO PESSAGNO","solicitante":"LUCAS","parentesco":"","avo":"ANTONIO PESSAGNO","tipo":"Nacimiento","comuna":"CHIAVARI, Genova","notas":"B6/3","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1128,"fecha":"2025-03-06","persona":"GIOVANNI BATTISTA SECULIN","solicitante":"LUCAS","parentesco":"","avo":"GIOVANNI BATTISTA SECULIN","tipo":"Nacimiento","comuna":"CORMONS, Trieste","notas":"B6/3","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1129,"fecha":"2025-03-06","persona":"GIOVANNI BATTISTA SECULIN con ANNA RUSSIAN","solicitante":"LUCAS","parentesco":"","avo":"GIOVANNI BATTISTA SECULIN con ANNA RUSSIAN","tipo":"Nacimiento","comuna":"CORMONS, Trieste","notas":"B6/3","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1130,"fecha":"2025-03-06","persona":"GEROLAMO GHIGLIA con MADDALENA ROSCIANO","solicitante":"LUCAS","parentesco":"","avo":"GEROLAMO GHIGLIA con MADDALENA ROSCIANO","tipo":"Nacimiento","comuna":"VARAZZE, provincia de Savona (probablemente Frazione di CASANOVA)","notas":"LA PEDIMOS PARA EL HIJO, YA HABIA LLEGADO","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1131,"fecha":"2025-03-08","persona":"NICOLA CALO","solicitante":"LUCAS","parentesco":"","avo":"NICOLA CALO","tipo":"Nacimiento","comuna":"TROPEA (VV)","notas":"","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1132,"fecha":"2025-03-10","persona":"MARIO ALLEGRO","solicitante":"LUCAS","parentesco":"","avo":"MARIO ALLEGRO","tipo":"Nacimiento","comuna":"BRUGHERIO o MONZA (prov de Milan)","notas":"","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1133,"fecha":"2025-03-12","persona":"SERAFINO TRIPICCHIO","solicitante":"LUCAS","parentesco":"","avo":"SERAFINO TRIPICCHIO","tipo":"Nacimiento","comuna":"CETRARO, Cosenza","notas":"hay foto de una transcripcion, pero dice que nació en Cetraro","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1134,"fecha":"2025-03-14","persona":"SERAFINO TRIPICCHIO con BRIGIDA BRUSCA","solicitante":"LUCAS","parentesco":"","avo":"SERAFINO TRIPICCHIO con BRIGIDA BRUSCA","tipo":"Nacimiento","comuna":"CETRARO, Cosenza","notas":"","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1135,"fecha":"2025-03-14","persona":"PASQUALE PESARESI","solicitante":"LUCAS","parentesco":"","avo":"PASQUALE PESARESI","tipo":"Nacimiento","comuna":"RIMINI, Forli","notas":"b7/4","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1136,"fecha":"2025-03-14","persona":"CARLO PIETRA","solicitante":"LUCAS","parentesco":"","avo":"CARLO PIETRA","tipo":"Nacimiento","comuna":"ARENA PO, Pavia","notas":"b7/4","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1137,"fecha":"2025-03-19","persona":"Natalio San Marco","solicitante":"PAU","parentesco":"","avo":"Natalio San Marco","tipo":"Nacimiento","comuna":"Rossano, Cosenza","notas":"Consultar por matrimonio con Cristina Brugna antes de 1902 que fue el nacimiento de Juan, su hijo ya en Argentina","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1138,"fecha":"2025-03-21","persona":"STILLIANO (STILIANO) BASILI","solicitante":"LUCAS","parentesco":"","avo":"STILLIANO (STILIANO) BASILI","tipo":"Nacimiento","comuna":"OSTRA VETERE, Ancona","notas":"CANCELADO POR EL CLIENTE","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1139,"fecha":"2025-03-21","persona":"BUSSO GIUSEPPE MARCELLINO","solicitante":"PAU","parentesco":"","avo":"BUSSO GIUSEPPE MARCELLINO","tipo":"Nacimiento","comuna":"Ruffia, Cuneo","notas":"ATTO 25","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1140,"fecha":"2025-03-25","persona":"SALVATORE STANCANELLI","solicitante":"LUCAS","parentesco":"","avo":"SALVATORE STANCANELLI","tipo":"Nacimiento","comuna":"CENTURIPE, Enna","notas":"","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1141,"fecha":"2025-04-04","persona":"SALVATORE STANCANELLI con JUANA MARRARO","solicitante":"LUCAS","parentesco":"","avo":"SALVATORE STANCANELLI con JUANA MARRARO","tipo":"Nacimiento","comuna":"CENTURIPE, Enna","notas":"","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1142,"fecha":"2025-04-04","persona":"NOVELLO LUIGI CON DEL ROIO CONCETTA","solicitante":"PAU","parentesco":"","avo":"NOVELLO LUIGI CON DEL ROIO CONCETTA","tipo":"Nacimiento","comuna":"MONTAZZOLI, CHIETI","notas":"ATTO 10 PARTE 2 SERIE A","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1143,"fecha":"2025-04-11","persona":"DOMENICO CAPPA","solicitante":"LUCAS","parentesco":"","avo":"DOMENICO CAPPA","tipo":"Nacimiento","comuna":"MONTORO SUPERIORE, Avellino","notas":"B1/5/25","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1144,"fecha":"2025-04-15","persona":"DOMENICO CAPPA con LUCIA DE LEO","solicitante":"LUCAS","parentesco":"","avo":"DOMENICO CAPPA con LUCIA DE LEO","tipo":"Nacimiento","comuna":"MONTORO SUPERIORE, Avellino","notas":"B1/5/25","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1145,"fecha":"2025-04-15","persona":"PADULA GIUSEPPE","solicitante":"PAU","parentesco":"","avo":"PADULA GIUSEPPE","tipo":"Nacimiento","comuna":"TROPEA","notas":"FOTO X MAIL","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1146,"fecha":"2025-04-16","persona":"PADULA GIUSEPPE CON SERRAMANDO ELVIRA","solicitante":"PAU","parentesco":"","avo":"PADULA GIUSEPPE CON SERRAMANDO ELVIRA","tipo":"Nacimiento","comuna":"NICASTRO, CATANZARO","notas":"B1/5/25","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1147,"fecha":"2025-04-16","persona":"CARLOS AGUSTIN RONDINELLA","solicitante":"LUCAS","parentesco":"","avo":"CARLOS AGUSTIN RONDINELLA","tipo":"Nacimiento","comuna":"TRELEW, Chubut. Juicio en ROMA (via materna) AVO de Comune di OFFAGNA (ANCONA)","notas":"ACTA NACIMIENTO TRANSCRIPTA EN ITALIA (PEDIDA EN FAST IT)","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1148,"fecha":"2025-04-22","persona":"AIMÉ RONDINELLA NOBRE","solicitante":"LUCAS","parentesco":"","avo":"AIMÉ RONDINELLA NOBRE","tipo":"Nacimiento","comuna":"LA PLATA, Buenos Aires. Juicio en ROMA (via materna siendo menor junto al papá) AVO de Comune di OFFAGNA (ANCONA)","notas":"ACTA NACIMIENTO TRANSCRIPTA EN ITALIA (PEDIDA EN FAST IT)","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1149,"fecha":"2025-04-22","persona":"ALESSANDRO SELVATICI","solicitante":"LUCAS","parentesco":"","avo":"ALESSANDRO SELVATICI","tipo":"Nacimiento","comuna":"CASTEL SAN PIETRO DELL´EMILIA, Bologna","notas":"URGENTE PORFA","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1150,"fecha":"2025-04-28","persona":"Rosario Messana","solicitante":"PAU","parentesco":"","avo":"Rosario Messana","tipo":"Nacimiento","comuna":"Palma Montecchiara, Agrigento","notas":"B28/5/25","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1151,"fecha":"2025-05-08","persona":"Gallesio Mario Giovanni Felice","solicitante":"PAU","parentesco":"","avo":"Gallesio Mario Giovanni Felice","tipo":"Nacimiento","comuna":"Mallare, Savona","notas":"n° 6","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1152,"fecha":"2025-05-13","persona":"Gallesio Mario Giovanni Felice con Cerruti Erminia","solicitante":"PAU","parentesco":"","avo":"Gallesio Mario Giovanni Felice con Cerruti Erminia","tipo":"Nacimiento","comuna":"Mallare, Savona","notas":"n° 2 serie a","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1153,"fecha":"2025-05-13","persona":"DOMENICO GUASTI","solicitante":"LUCAS","parentesco":"","avo":"DOMENICO GUASTI","tipo":"Nacimiento","comuna":"FONTANILE, Asti","notas":"","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1154,"fecha":"2025-05-21","persona":"MARIA STELLA SOLANO","solicitante":"LUCAS","parentesco":"","avo":"MARIA STELLA SOLANO","tipo":"Nacimiento","comuna":"LIMBADI, Vibo Valentia","notas":"priori porfa","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1155,"fecha":"2025-05-21","persona":"Pellegrino Oliva","solicitante":"PAU","parentesco":"","avo":"Pellegrino Oliva","tipo":"Nacimiento","comuna":"Candida, Avellino","notas":"PARTE 1 N 24","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1156,"fecha":"2025-05-29","persona":"NICOLA ZUCCARELLA","solicitante":"LUCAS","parentesco":"","avo":"NICOLA ZUCCARELLA","tipo":"Nacimiento","comuna":"RUOTI, Potenza","notas":"N° 30 parte 1 anno 1906","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1157,"fecha":"2025-07-03","persona":"FABRIZIO GIUSEPPE VORTALI","solicitante":"PAU","parentesco":"","avo":"FABRIZIO GIUSEPPE VORTALI","tipo":"Nacimiento","comuna":"Eraclea, Venezia","notas":"PARTE 1 N 204","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1158,"fecha":"2025-07-11","persona":"MICHELE SPINELLI","solicitante":"LUCAS","parentesco":"","avo":"MICHELE SPINELLI","tipo":"Nacimiento","comuna":"SALA, Principato Citeriore (hoy SALA CONSILINA, prov Salerno)","notas":"N° d´ordine 98","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1159,"fecha":"2025-07-18","persona":"FRANCISCO CALANNI o FRANCISCO CALANNI RINDINA","solicitante":"LUCAS","parentesco":"","avo":"FRANCISCO CALANNI o FRANCISCO CALANNI RINDINA","tipo":"Nacimiento","comuna":"TORTORICI como primer opción o MILAN como segunda","notas":"Solicitada en FAST IT haciendole AIRE","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"LUCAS"},{"id":1160,"fecha":"2025-07-22","persona":"Bruna Spaltro","solicitante":"PAU","parentesco":"","avo":"Bruna Spaltro","tipo":"Nacimiento","comuna":"Francavilla in Sinni, Potenza","notas":"B1/3","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1161,"fecha":"2025-07-28","persona":"CUSENIER MATIAS","solicitante":"PAU","parentesco":"","avo":"CUSENIER MATIAS","tipo":"Nacimiento","comuna":"ancona","notas":"","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1162,"fecha":"2025-07-31","persona":"Enrique Mietta","solicitante":"PAU","parentesco":"","avo":"Enrique Mietta","tipo":"Nacimiento","comuna":"Pieve Albignola, Pavia","notas":"B4/8","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1163,"fecha":"2025-08-04","persona":"Santos Filipuzzi","solicitante":"MALE","parentesco":"","avo":"Santos Filipuzzi","tipo":"Nacimiento","comuna":"San Giorgio della Richinvelda, Pordenone","notas":"B1/10","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1164,"fecha":"2025-08-05","persona":"Santos Filipuzzi con Rosa Bisaro","solicitante":"MALE","parentesco":"","avo":"Santos Filipuzzi con Rosa Bisaro","tipo":"Nacimiento","comuna":"San Giorgio della Richinvelda (Pordenone) Ó Udine (Udine)","notas":"","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1165,"fecha":"2025-08-05","persona":"Rocco Lico","solicitante":"MALE","parentesco":"","avo":"Rocco Lico","tipo":"Nacimiento","comuna":"San Costantino Calabro, Vibo Valentia","notas":"B1/10","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1166,"fecha":"2025-08-05","persona":"Donato D’Alessandro","solicitante":"PAU","parentesco":"","avo":"Donato D’Alessandro","tipo":"Nacimiento","comuna":"Monteodorisio, Chieti","notas":"B1/10","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1167,"fecha":"2025-08-05","persona":"RYSER/RIJSER ALBERTO LUIGI","solicitante":"PAU","parentesco":"","avo":"RYSER/RIJSER ALBERTO LUIGI","tipo":"Nacimiento","comuna":"MILANO","notas":"FOTO X MAIL","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1168,"fecha":"2025-09-02","persona":"Paolo Marasco","solicitante":"MALE","parentesco":"","avo":"Paolo Marasco","tipo":"Nacimiento","comuna":"Savelli, Catanzaro","notas":"B1/10","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1169,"fecha":"2025-09-04","persona":"Ludovico Pietro Simonetti","solicitante":"MALE","parentesco":"","avo":"Ludovico Pietro Simonetti","tipo":"Nacimiento","comuna":"Monasterace, Reggio Calabria","notas":"B1/10","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1170,"fecha":"2025-09-09","persona":"Francesco Gentile","solicitante":"MALE","parentesco":"","avo":"Francesco Gentile","tipo":"Nacimiento","comuna":"Siracusa, Siracusa","notas":"B1/10","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1171,"fecha":"2025-09-11","persona":"fFrancesco Gentile y Lucia Maria Valentino","solicitante":"MALE","parentesco":"","avo":"fFrancesco Gentile y Lucia Maria Valentino","tipo":"Nacimiento","comuna":"Siracusa, Siracusa","notas":"B1/10","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1172,"fecha":"2025-09-11","persona":"Giuseppe Della Savia","solicitante":"MALE","parentesco":"","avo":"Giuseppe Della Savia","tipo":"Nacimiento","comuna":"Bertiolo, Udine","notas":"B1/10","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1173,"fecha":"2025-09-17","persona":"Brandino Sgariglia","solicitante":"MALE","parentesco":"","avo":"Brandino Sgariglia","tipo":"Nacimiento","comuna":"Sant'Elpidio a Mare, Fermo","notas":"B1/1","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1174,"fecha":"2025-09-18","persona":"Natale Lattanzi","solicitante":"MALE","parentesco":"","avo":"Natale Lattanzi","tipo":"Nacimiento","comuna":"Ponzano di Fermo, Fermo","notas":"B1/1","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1175,"fecha":"2025-10-01","persona":"Natale Lattanzi y Maria Bracciotti","solicitante":"MALE","parentesco":"","avo":"Natale Lattanzi y Maria Bracciotti","tipo":"Nacimiento","comuna":"Monte Giberto, Fermo","notas":"B1/1","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1176,"fecha":"2025-10-01","persona":"Domenico Savoia","solicitante":"MALE","parentesco":"","avo":"Domenico Savoia","tipo":"Nacimiento","comuna":"Bagnara Calabra, Reggio Calabria","notas":"FOTO X MAIL","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1177,"fecha":"2025-10-06","persona":"Francesco Petrone","solicitante":"MALE","parentesco":"","avo":"Francesco Petrone","tipo":"Nacimiento","comuna":"Fuscaldo, Cosenza","notas":"B1/1","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1178,"fecha":"2025-10-07","persona":"Francesco Petrone y María Bosco","solicitante":"MALE","parentesco":"","avo":"Francesco Petrone y María Bosco","tipo":"Nacimiento","comuna":"Fuscaldo, Cosenza","notas":"B1/1","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1179,"fecha":"2025-10-17","persona":"Leonarda Molinaro","solicitante":"MALE","parentesco":"","avo":"Leonarda Molinaro","tipo":"Nacimiento","comuna":"Trani, Bari","notas":"FOTO X MAIL","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1180,"fecha":"2025-10-15","persona":"Luigi Del Curto","solicitante":"MALE","parentesco":"","avo":"Luigi Del Curto","tipo":"Nacimiento","comuna":"Piuro, Sondrio","notas":"FOTO X MAIL","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1181,"fecha":"2025-10-20","persona":"SCARANO LUIGI","solicitante":"PAU","parentesco":"","avo":"SCARANO LUIGI","tipo":"Nacimiento","comuna":"CASTELLABATE, SALERNO","notas":"FOTO X MAIL","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1182,"fecha":"2025-10-27","persona":"SCARANO LUIGI CON GUARIGLIA CAROLINA","solicitante":"PAU","parentesco":"","avo":"SCARANO LUIGI CON GUARIGLIA CAROLINA","tipo":"Nacimiento","comuna":"CASTELLABATE, SALERNO","notas":"FOTO X MAIL","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1183,"fecha":"2025-10-27","persona":"Bartolomeo Fusco","solicitante":"MALE","parentesco":"","avo":"Bartolomeo Fusco","tipo":"Nacimiento","comuna":"Caserta, Caserta","notas":"FOTO X MAIL","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1184,"fecha":"2025-10-29","persona":"Mafalda Trotta","solicitante":"MALE","parentesco":"","avo":"Mafalda Trotta","tipo":"Nacimiento","comuna":"Fuscaldo, Cosenza","notas":"b1/4","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1185,"fecha":"2025-10-29","persona":"Adelchi Mussio","solicitante":"MALE","parentesco":"","avo":"Adelchi Mussio","tipo":"Nacimiento","comuna":"Arzene, Pordenone","notas":"FOTO X MAIL","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1186,"fecha":"2025-11-10","persona":"Giuseppe Scalise","solicitante":"MALE","parentesco":"","avo":"Giuseppe Scalise","tipo":"Nacimiento","comuna":"Savelli, Crotone","notas":"FOTO X MAIL","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1187,"fecha":"2025-11-10","persona":"Natale Leotta","solicitante":"MALE","parentesco":"","avo":"Natale Leotta","tipo":"Nacimiento","comuna":"Paludi, Cosenza","notas":"FOTO X MAIL","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1188,"fecha":"2025-11-10","persona":"Urszula Witkowska","solicitante":"MALE","parentesco":"","avo":"Urszula Witkowska","tipo":"Nacimiento","comuna":"Forlì, Forlì-Cesena","notas":"FOTO X MAIL","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1189,"fecha":"2025-11-12","persona":"Gioacchino Pallocchi","solicitante":"MALE","parentesco":"","avo":"Gioacchino Pallocchi","tipo":"Nacimiento","comuna":"Pofi, Frosinone","notas":"","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1190,"fecha":"2025-11-26","persona":"Giovanni Maria Basso","solicitante":"MALE","parentesco":"","avo":"Giovanni Maria Basso","tipo":"Nacimiento","comuna":"Codognè, Treviso","notas":"PEDIR 4 COPIAS!!","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1191,"fecha":"2025-12-03","persona":"Leonardo Giovinetti","solicitante":"MALE","parentesco":"","avo":"Leonardo Giovinetti","tipo":"Nacimiento","comuna":"Benevento, Benevento","notas":"","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1192,"fecha":"2025-12-15","persona":"Stanislao Manente","solicitante":"MALE","parentesco":"","avo":"Stanislao Manente","tipo":"Nacimiento","comuna":"San Lorenzo Maggiore, Benevento","notas":"FOTO X MAIL","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1193,"fecha":"2026-01-23","persona":"Stanislao Manente y Clara Rossi","solicitante":"MALE","parentesco":"","avo":"Stanislao Manente y Clara Rossi","tipo":"Nacimiento","comuna":"San Lorenzo Maggiore, Benevento","notas":"FOTO X MAIL","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1194,"fecha":"2026-01-23","persona":"Ida Guido","solicitante":"MALE","parentesco":"","avo":"Ida Guido","tipo":"Nacimiento","comuna":"San Benedetto Ullano, Cosenza","notas":"B1/3","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1195,"fecha":"2026-02-18","persona":"VOLPENTESTA MARIO","solicitante":"PAU","parentesco":"","avo":"VOLPENTESTA MARIO","tipo":"Nacimiento","comuna":"RENDE, COSENZA","notas":"B1/3","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"PAU"},{"id":1196,"fecha":"2026-02-27","persona":"Antonio Lupiano","solicitante":"MALE","parentesco":"","avo":"Antonio Lupiano","tipo":"Nacimiento","comuna":"Francavilla Sul Sinni, Potenza","notas":"FOTO X MAIL","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1197,"fecha":"2026-03-02","persona":"Antonio Lupiano y Maria Giuseppa Introcaso","solicitante":"MALE","parentesco":"","avo":"Antonio Lupiano y Maria Giuseppa Introcaso","tipo":"Nacimiento","comuna":"Francavilla Sul Sinni, Potenza","notas":"FOTO X MAIL","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1198,"fecha":"2026-03-02","persona":"Antonino Fiorentino","solicitante":"MALE","parentesco":"","avo":"Antonino Fiorentino","tipo":"Nacimiento","comuna":"Sorrento, Napoli","notas":"FOTO X MAIL","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1199,"fecha":"2026-03-18","persona":"Liliana Pirola","solicitante":"MALE","parentesco":"","avo":"Liliana Pirola","tipo":"Nacimiento","comuna":"Sesto San Giovanni, Milán","notas":"- Certificado de ciudadanía italiana (ATTESTATO/CERTIFICATO di cittadinanza),\n- Trascripción del acta de nacimiento en el municipio italiano (Estratto per riassunto del suo atto di nascita),\n- Certificado de residencia en Italia (Certificato STORICO di residenza).","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"},{"id":1200,"fecha":"2026-04-01","persona":"Orazio Antonio Luciano Lembo","solicitante":"MALE","parentesco":"","avo":"Orazio Antonio Luciano Lembo","tipo":"Nacimiento","comuna":"Montecorice, Salerno","notas":"FOTO X MAIL, PEDIDO X OBSERVACION CONSULAR","estado":"proceso","padres":"","fechaHecho":"","pedidaBy":"","cliente":"MALE"}],"finalizados":[],"comunas":[]};
+// =============================================
+// ESTADO LOCAL
+// =============================================
+const PP = 20;
+let V = 'proceso';
+let D = { proceso: [], finalizados: [], comunas: [] };
+let F = { proceso: [], finalizados: [] };
+let P = { proceso: 1, finalizados: 1 };
+let editMode = {};
 
+const COMUNAS_IMPERIO = ['Trieste','Fiume','Zara','Gorizia','Pola'];
+function esI(c){ return COMUNAS_IMPERIO.some(x => c && c.includes(x)); }
+function bI(){ return '<span class="imperio-badge">Imperio AH</span>'; }
 
-// ===== DATOS INICIALES CARGADOS DESDE EXCEL =====
-
-
-
-const COMUNAS_IMPERIO=['Trieste','Fiume','Zara','Gorizia','Pola'];
-function esI(c){return COMUNAS_IMPERIO.includes(c);}
-function bI(){return'<span class="imperio-badge">Imperio AH</span>';}
-
-function cambiar(v){
-document.querySelectorAll('.htab').forEach(t=>t.classList.remove('on'));
-document.querySelector(`[data-tab="${v}"]`).classList.add('on');
-document.querySelectorAll('.view').forEach(vw=>vw.classList.remove('on'));
-document.getElementById('v-'+v).classList.add('on');
-V=v;
-actualizarContador();
+// =============================================
+// TOAST
+// =============================================
+let toastTimer;
+function toast(msg, tipo='ok') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${tipo} show`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-function actualizarContador(){
-if(V === 'euros') {
-document.getElementById('cnt').textContent = D.comunas ? D.comunas.length : 0;
-} else {
-const total = D[V] ? D[V].length : 0;
-document.getElementById('cnt').textContent = total;
-}
+// =============================================
+// CARGA INICIAL DESDE SUPABASE
+// =============================================
+async function cargarDatos() {
+  document.getElementById('loading').style.display = 'flex';
+  try {
+    // Cargar actas en proceso
+    const { data: proceso, error: e1 } = await sb
+      .from('actas_italia')
+      .select('*')
+      .eq('estado', 'proceso')
+      .order('fecha', { ascending: false });
+    if (e1) throw e1;
+
+    // Cargar actas finalizadas
+    const { data: finalizados, error: e2 } = await sb
+      .from('actas_italia')
+      .select('*')
+      .eq('estado', 'finalizados')
+      .order('fecha', { ascending: false });
+    if (e2) throw e2;
+
+    // Cargar comunas euros
+    const { data: comunas, error: e3 } = await sb
+      .from('comunas_euros')
+      .select('*')
+      .order('nombre', { ascending: true });
+    // Si la tabla no existe, ignorar error
+    
+    D.proceso = proceso || [];
+    D.finalizados = finalizados || [];
+    D.comunas = (comunas || []).map(c => ({
+      nombre: c.nombre,
+      cobraEuros: c.cobra_euros
+    }));
+
+    F.proceso = [...D.proceso];
+    F.finalizados = [...D.finalizados];
+
+    render('proceso');
+    render('finalizados');
+    renderComunasEuros();
+    actualizarContador();
+  } catch(err) {
+    console.error('Error cargando datos:', err);
+    toast('Error conectando con Supabase: ' + err.message, 'err');
+  } finally {
+    document.getElementById('loading').style.display = 'none';
+  }
 }
 
-function render(t){
-const tb=document.getElementById('tb-'+t);
-const d=F[t];
-const p=P[t];
-if(d.length===0){
-tb.innerHTML='<tr><td colspan="11" style="text-align:center;padding:60px;color:#94a3b8">📋<br>No hay actas</td></tr>';
-document.getElementById('pg-'+t).innerHTML='';
-return;
+// =============================================
+// MAPEO: objeto JS → columnas Supabase
+// =============================================
+function toRow(a) {
+  return {
+    fecha: a.fecha || null,
+    persona: a.persona || '',
+    solicitante: a.solicitante || '',
+    avo: a.avo || '',
+    tipo: a.tipo || 'Nacimiento',
+    comuna: a.comuna || '',
+    notas: a.notas || '',
+    estado: a.estado || 'proceso',
+    padres: a.padres || '',
+    fecha_hecho: a.fechaHecho || '',
+    parentesco: a.parentesco || '',
+    pedida_by: a.pedidaBy || '',
+    cliente: a.cliente || a.solicitante || ''
+  };
 }
-const i=(p-1)*PP;
-const f=i+PP;
-const pd=d.slice(i,f);
-tb.innerHTML=pd.map((a,x)=>{
-const ix=i+x;
-const tb='tipo-'+a.tipo.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
-const isEdit = editMode[a.id];
 
-if(isEdit) {
-return `<tr class="editable-row" id="row-${a.id}">
-<td><input type="date" value="${a.fecha}" data-id="${a.id}" data-field="fecha"></td>
-<td><input type="text" value="${a.solicitante||''}" data-id="${a.id}" data-field="solicitante" placeholder="CLIENTE"></td>
-<td><input type="text" value="${a.persona}" data-id="${a.id}" data-field="persona" placeholder="AVO"></td>
-<td><input type="text" value="${a.padres||''}" data-id="${a.id}" data-field="padres" placeholder="Nombre de los Padres"></td>
-<td><input type="text" value="${a.fechaHecho||''}" data-id="${a.id}" data-field="fechaHecho" placeholder="Fecha del Hecho"></td>
-<td><input type="text" value="${a.comuna}" data-id="${a.id}" data-field="comuna" placeholder="Comuna"></td>
-<td>
-<select data-id="${a.id}" data-field="tipo">
-<option value="Nacimiento" ${a.tipo==='Nacimiento'?'selected':''}>Nacimiento</option>
-<option value="Matrimonio" ${a.tipo==='Matrimonio'?'selected':''}>Matrimonio</option>
-<option value="Defunción" ${a.tipo==='Defunción'?'selected':''}>Defunción</option>
-<option value="Bautismo" ${a.tipo==='Bautismo'?'selected':''}>Bautismo</option>
-</select>
-</td>
-<td>
-<select data-id="${a.id}" data-field="parentesco">
-<option value="" ${!a.parentesco?'selected':''}>-</option>
-<option value="Papá" ${a.parentesco==='Papá'?'selected':''}>Papá</option>
-<option value="Mamá" ${a.parentesco==='Mamá'?'selected':''}>Mamá</option>
-<option value="Abuelo/a" ${a.parentesco==='Abuelo/a'?'selected':''}>Abuelo/a</option>
-<option value="Bisabuelo/a" ${a.parentesco==='Bisabuelo/a'?'selected':''}>Bisabuelo/a</option>
-<option value="Tatarabuelo/a" ${a.parentesco==='Tatarabuelo/a'?'selected':''}>Tatarabuelo/a</option>
-<option value="Tío/a" ${a.parentesco==='Tío/a'?'selected':''}>Tío/a</option>
-<option value="Hermano/a" ${a.parentesco==='Hermano/a'?'selected':''}>Hermano/a</option>
-<option value="Otro" ${a.parentesco==='Otro'?'selected':''}>Otro</option>
-</select>
-</td>
-<td>
-<select data-id="${a.id}" data-field="pedidaBy">
-<option value="" ${!a.pedidaBy?'selected':''}>-</option>
-<option value="BELEN" ${a.pedidaBy==='BELEN'?'selected':''}>BELEN</option>
-<option value="GERMAN" ${a.pedidaBy==='GERMAN'?'selected':''}>GERMAN</option>
-<option value="SOFIA" ${a.pedidaBy==='SOFIA'?'selected':''}>SOFIA</option>
-<option value="MALENA" ${a.pedidaBy==='MALENA'?'selected':''}>MALENA</option>
-</select>
-</td>
-<td><input type="text" value="${a.notas||''}" data-id="${a.id}" data-field="notas" placeholder="Notas"></td>
-<td>
-<div class="btn-actions">
+// Mapeo inverso: fila Supabase → objeto JS
+function fromRow(r) {
+  return {
+    id: r.id,
+    fecha: r.fecha || '',
+    persona: r.persona || '',
+    solicitante: r.solicitante || r.cliente || '',
+    avo: r.avo || '',
+    tipo: r.tipo || 'Nacimiento',
+    comuna: r.comuna || '',
+    notas: r.notas || '',
+    estado: r.estado || 'proceso',
+    padres: r.padres || '',
+    fechaHecho: r.fecha_hecho || '',
+    parentesco: r.parentesco || '',
+    pedidaBy: r.pedida_by || '',
+    cliente: r.cliente || r.solicitante || ''
+  };
+}
+
+// =============================================
+// NAVEGACIÓN
+// =============================================
+function cambiar(v) {
+  document.querySelectorAll('.htab').forEach(t => t.classList.remove('on'));
+  document.querySelector(`[data-tab="${v}"]`).classList.add('on');
+  document.querySelectorAll('.view').forEach(vw => vw.classList.remove('on'));
+  document.getElementById('v-' + v).classList.add('on');
+  V = v;
+  actualizarContador();
+}
+
+function actualizarContador() {
+  if (V === 'euros') {
+    document.getElementById('cnt').textContent = D.comunas ? D.comunas.length : 0;
+  } else {
+    document.getElementById('cnt').textContent = D[V] ? D[V].length : 0;
+  }
+}
+
+// =============================================
+// RENDER TABLA
+// =============================================
+function render(t) {
+  const tb = document.getElementById('tb-' + t);
+  const d = F[t];
+  const p = P[t];
+  if (d.length === 0) {
+    tb.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:60px;color:#94a3b8">📋<br>No hay actas</td></tr>';
+    document.getElementById('pg-' + t).innerHTML = '';
+    return;
+  }
+  const i = (p - 1) * PP;
+  const pd = d.slice(i, i + PP);
+
+  tb.innerHTML = pd.map((a, x) => {
+    const ix = i + x;
+    const tipoCls = 'tipo-' + (a.tipo||'').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+    const isEdit = editMode[a.id];
+
+    if (isEdit) {
+      return `<tr class="editable-row" id="row-${a.id}">
+<td><input type="date" value="${isEdit.fecha||''}" data-id="${a.id}" data-field="fecha"></td>
+<td><input type="text" value="${isEdit.solicitante||''}" data-id="${a.id}" data-field="solicitante" placeholder="CLIENTE"></td>
+<td><input type="text" value="${isEdit.avo||''}" data-id="${a.id}" data-field="avo" placeholder="AVO"></td>
+<td><input type="text" value="${isEdit.padres||''}" data-id="${a.id}" data-field="padres" placeholder="Padres"></td>
+<td><input type="text" value="${isEdit.fechaHecho||''}" data-id="${a.id}" data-field="fechaHecho" placeholder="Fecha del Hecho"></td>
+<td><input type="text" value="${isEdit.comuna||''}" data-id="${a.id}" data-field="comuna" placeholder="Comuna"></td>
+<td><select data-id="${a.id}" data-field="tipo">
+<option value="Nacimiento" ${isEdit.tipo==='Nacimiento'?'selected':''}>Nacimiento</option>
+<option value="Matrimonio" ${isEdit.tipo==='Matrimonio'?'selected':''}>Matrimonio</option>
+<option value="Defunción" ${isEdit.tipo==='Defunción'?'selected':''}>Defunción</option>
+<option value="Bautismo" ${isEdit.tipo==='Bautismo'?'selected':''}>Bautismo</option>
+</select></td>
+<td><select data-id="${a.id}" data-field="parentesco">
+<option value="" ${!isEdit.parentesco?'selected':''}>-</option>
+<option value="Papá" ${isEdit.parentesco==='Papá'?'selected':''}>Papá</option>
+<option value="Mamá" ${isEdit.parentesco==='Mamá'?'selected':''}>Mamá</option>
+<option value="Abuelo/a" ${isEdit.parentesco==='Abuelo/a'?'selected':''}>Abuelo/a</option>
+<option value="Bisabuelo/a" ${isEdit.parentesco==='Bisabuelo/a'?'selected':''}>Bisabuelo/a</option>
+<option value="Tatarabuelo/a" ${isEdit.parentesco==='Tatarabuelo/a'?'selected':''}>Tatarabuelo/a</option>
+<option value="Tío/a" ${isEdit.parentesco==='Tío/a'?'selected':''}>Tío/a</option>
+<option value="Hermano/a" ${isEdit.parentesco==='Hermano/a'?'selected':''}>Hermano/a</option>
+<option value="Otro" ${isEdit.parentesco==='Otro'?'selected':''}>Otro</option>
+</select></td>
+<td><select data-id="${a.id}" data-field="pedidaBy">
+<option value="" ${!isEdit.pedidaBy?'selected':''}>-</option>
+<option value="BELEN" ${isEdit.pedidaBy==='BELEN'?'selected':''}>BELEN</option>
+<option value="GERMAN" ${isEdit.pedidaBy==='GERMAN'?'selected':''}>GERMAN</option>
+<option value="SOFIA" ${isEdit.pedidaBy==='SOFIA'?'selected':''}>SOFIA</option>
+<option value="MALENA" ${isEdit.pedidaBy==='MALENA'?'selected':''}>MALENA</option>
+</select></td>
+<td><input type="text" value="${(isEdit.notas||'').replace(/"/g,'&quot;')}" data-id="${a.id}" data-field="notas" placeholder="Notas"></td>
+<td><div class="btn-actions">
 <button class="btn-finalizar" onclick="guardarEdicion('${t}',${a.id})">💾 Guardar</button>
 <button class="btn-del" onclick="cancelarEdicion(${a.id})">✕ Cancelar</button>
-</div>
-</td>
+</div></td>
 </tr>`;
-}
+    }
 
-return`<tr>
+    return `<tr>
 <td>${fmt(a.fecha)}</td>
-<td>${a.solicitante ? `<span class="solicitante-badge sol-${a.solicitante.toLowerCase()}">${a.solicitante}</span>` : '-'}</td>
-<td><strong>${a.persona}</strong></td>
+<td>${a.solicitante ? `<span class="solicitante-badge sol-${(a.solicitante||'').toLowerCase()}">${a.solicitante}</span>` : '-'}</td>
+<td><strong>${a.avo||a.persona||''}</strong></td>
 <td style="font-size:12px;color:var(--gr)">${a.padres||'-'}</td>
 <td style="font-size:12px">${a.fechaHecho||'-'}</td>
-<td style="color:var(--az);font-weight:600">${a.comuna}${esI(a.comuna)?bI():''}</td>
-<td><span class="tipo-badge ${tb}">${a.tipo}</span></td>
+<td style="color:var(--az);font-weight:600">${a.comuna||''}${esI(a.comuna||'')?bI():''}</td>
+<td><span class="tipo-badge ${tipoCls}">${a.tipo||''}</span></td>
 <td style="color:var(--az);font-weight:600">${a.parentesco||'-'}</td>
-<td>${a.pedidaBy ? `<span class="solicitante-badge sol-${a.pedidaBy.toLowerCase()}">${a.pedidaBy}</span>` : '-'}</td>
-<td style="font-size:12px;color:var(--gr)">${(a.notas||'').substring(0,35)+(a.notas?.length>35?'...':'')}</td>
+<td>${a.pedidaBy ? `<span class="solicitante-badge sol-${(a.pedidaBy||'').toLowerCase()}">${a.pedidaBy}</span>` : '-'}</td>
+<td style="font-size:12px;color:var(--gr)">${(a.notas||'').substring(0,35)+((a.notas||'').length>35?'...':'')}</td>
 <td><div class="btn-actions">
 ${t==='proceso'?`<button class="btn-finalizar" onclick="mover('${t}',${ix},'finalizados')">✓ Finalizar</button>`:''}
 ${t==='finalizados'?`<button class="btn-proceso" onclick="mover('${t}',${ix},'proceso')">← En Proceso</button>`:''}
@@ -478,303 +443,300 @@ ${t==='finalizados'?`<button class="btn-proceso" onclick="mover('${t}',${ix},'pr
 <button class="btn-del" onclick="eliminar('${t}',${ix})">Eliminar</button>
 </div></td>
 </tr>`;
-}).join('');
+  }).join('');
 
-// Agregar event listeners para edición en tiempo real
-if(Object.keys(editMode).length > 0) {
-document.querySelectorAll('.editable-row input, .editable-row select').forEach(el => {
-el.addEventListener('input', actualizarCampoTemporal);
-});
-}
+  if (Object.keys(editMode).length > 0) {
+    document.querySelectorAll('.editable-row input, .editable-row select').forEach(el => {
+      el.addEventListener('input', e => {
+        const id = parseInt(e.target.dataset.id);
+        const field = e.target.dataset.field;
+        if (editMode[id]) editMode[id][field] = e.target.value;
+      });
+    });
+  }
 
-renderPg(t);
-}
-
-function actualizarCampoTemporal(e) {
-const id = parseInt(e.target.dataset.id);
-const field = e.target.dataset.field;
-const value = e.target.value;
-if(editMode[id]) {
-editMode[id][field] = value;
-}
+  renderPg(t);
 }
 
-function renderPg(t){
-const tot=Math.ceil(F[t].length/PP);
-const dv=document.getElementById('pg-'+t);
-if(tot<=1){dv.innerHTML='';return}
-const p=P[t];
-let h=`<button class="page-btn" onclick="irPg('${t}',${p-1})" ${p===1?'disabled':''}>‹</button>`;
-for(let i=1;i<=tot;i++){
-if(i===1||i===tot||(i>=p-2&&i<=p+2)){
-h+=`<button class="page-btn ${i===p?'active':''}" onclick="irPg('${t}',${i})">${i}</button>`;
-}
-}
-h+=`<button class="page-btn" onclick="irPg('${t}',${p+1})" ${p===tot?'disabled':''}>›</button>`;
-dv.innerHTML=h;
-}
-
-function irPg(t,p){
-const tot=Math.ceil(F[t].length/PP);
-if(p<1||p>tot)return;
-P[t]=p;
-render(t);
+function renderPg(t) {
+  const tot = Math.ceil(F[t].length / PP);
+  const dv = document.getElementById('pg-' + t);
+  if (tot <= 1) { dv.innerHTML = ''; return; }
+  const p = P[t];
+  let h = `<button class="page-btn" onclick="irPg('${t}',${p-1})" ${p===1?'disabled':''}>‹</button>`;
+  for (let i = 1; i <= tot; i++) {
+    if (i===1||i===tot||(i>=p-2&&i<=p+2)) {
+      h += `<button class="page-btn ${i===p?'active':''}" onclick="irPg('${t}',${i})">${i}</button>`;
+    }
+  }
+  h += `<button class="page-btn" onclick="irPg('${t}',${p+1})" ${p===tot?'disabled':''}>›</button>`;
+  dv.innerHTML = h;
 }
 
-function fmt(f){
-if(!f)return'-';
-const d=new Date(f+'T00:00:00');
-return d.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
+function irPg(t, p) {
+  const tot = Math.ceil(F[t].length / PP);
+  if (p < 1 || p > tot) return;
+  P[t] = p;
+  render(t);
 }
 
-function mover(t,ix,nv){
-const a=F[t][ix];
-const txt=nv==='finalizados'?'FINALIZADA':'EN PROCESO';
-if(!confirm(`¿Marcar como ${txt} la acta de ${a.persona}?`))return;
-const ri=D[t].findIndex(x=>x.id===a.id);
-if(ri!==-1){
-const am=D[t].splice(ri,1)[0];
-am.estado=nv;
-D[nv].push(am);
-localStorage.setItem('actas-zittano',JSON.stringify(D));
-F.proceso=[...D.proceso];
-F.finalizados=[...D.finalizados];
-render('proceso');
-render('finalizados');
-actualizarContador();
-}
+function fmt(f) {
+  if (!f) return '-';
+  const d = new Date(f + 'T00:00:00');
+  return d.toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric' });
 }
 
-function editar(t,ix){
-const a=F[t][ix];
-editMode[a.id] = {...a};
-render(t);
-setTimeout(() => {
-const firstInput = document.querySelector(`#row-${a.id} input`);
-if(firstInput) firstInput.focus();
-}, 100);
+// =============================================
+// FILTRAR
+// =============================================
+function filtrar(t) {
+  const q = document.getElementById('s-' + t).value.toLowerCase();
+  if (!q) {
+    F[t] = [...D[t]];
+  } else {
+    F[t] = D[t].filter(a => {
+      const tx = `${a.persona} ${a.solicitante} ${a.parentesco} ${a.avo} ${a.comuna} ${a.tipo} ${a.notas}`.toLowerCase();
+      return tx.includes(q);
+    });
+  }
+  P[t] = 1;
+  render(t);
+  if (t === V) actualizarContador();
 }
 
-function guardarEdicion(t, id) {
-const datosEditados = editMode[id];
-if(!datosEditados) return;
+// =============================================
+// MOVER (proceso ↔ finalizados)
+// =============================================
+async function mover(t, ix, nv) {
+  const a = F[t][ix];
+  const txt = nv === 'finalizados' ? 'FINALIZADA' : 'EN PROCESO';
+  if (!confirm(`¿Marcar como ${txt} la acta de ${a.avo||a.persona}?`)) return;
 
-const ri = D[t].findIndex(x => x.id === id);
-if(ri !== -1) {
-D[t][ri] = {...datosEditados};
-localStorage.setItem('actas-zittano', JSON.stringify(D));
-F[t] = [...D[t]];
-delete editMode[id];
-render(t);
-actualizarContador();
+  toast('Guardando...', 'loading');
+  const { error } = await sb
+    .from('actas_italia')
+    .update({ estado: nv })
+    .eq('id', a.id);
+
+  if (error) {
+    toast('Error al mover: ' + error.message, 'err');
+    return;
+  }
+
+  const ri = D[t].findIndex(x => x.id === a.id);
+  if (ri !== -1) {
+    const am = D[t].splice(ri, 1)[0];
+    am.estado = nv;
+    D[nv].push(am);
+    F.proceso = [...D.proceso];
+    F.finalizados = [...D.finalizados];
+    render('proceso');
+    render('finalizados');
+    actualizarContador();
+    toast(nv === 'finalizados' ? '✓ Acta finalizada' : '↩ Volvió a En Proceso');
+  }
 }
+
+// =============================================
+// EDITAR
+// =============================================
+function editar(t, ix) {
+  const a = F[t][ix];
+  editMode[a.id] = { ...a };
+  render(t);
+  setTimeout(() => {
+    const firstInput = document.querySelector(`#row-${a.id} input`);
+    if (firstInput) firstInput.focus();
+  }, 100);
 }
 
 function cancelarEdicion(id) {
-delete editMode[id];
-render(V);
+  delete editMode[id];
+  render(V);
 }
 
-function eliminar(t,ix){
-const a=F[t][ix];
-if(!confirm(`¿Eliminar la acta de ${a.persona}?`))return;
-const ri=D[t].findIndex(x=>x.id===a.id);
-if(ri!==-1){
-D[t].splice(ri,1);
-localStorage.setItem('actas-zittano',JSON.stringify(D));
-F[t]=[...D[t]];
-render(t);
-actualizarContador();
-}
-}
+async function guardarEdicion(t, id) {
+  const datos = editMode[id];
+  if (!datos) return;
 
-function filtrar(t){
-const q=document.getElementById('s-'+t).value.toLowerCase();
-if(!q){
-F[t]=[...D[t]];
-}else{
-F[t]=D[t].filter(a=>{
-const tx=`${a.persona} ${a.solicitante} ${a.parentesco} ${a.avo} ${a.comuna} ${a.tipo} ${a.notas}`.toLowerCase();
-return tx.includes(q);
-});
-}
-P[t]=1;
-render(t);
-if(t===V) actualizarContador();
+  toast('Guardando...', 'loading');
+  const { error } = await sb
+    .from('actas_italia')
+    .update(toRow(datos))
+    .eq('id', id);
+
+  if (error) {
+    toast('Error al guardar: ' + error.message, 'err');
+    return;
+  }
+
+  const ri = D[t].findIndex(x => x.id === id);
+  if (ri !== -1) {
+    D[t][ri] = { ...datos };
+    F[t] = [...D[t]];
+  }
+  delete editMode[id];
+  render(t);
+  actualizarContador();
+  toast('✓ Acta guardada');
 }
 
-function nuevaActa(){
-const id = Date.now();
-const nueva = {
-id,
-fecha: new Date().toISOString().split('T')[0],
-persona: '',
-solicitante: '',
-padres: '',
-fechaHecho: '',
-parentesco: '',
-pedidaBy: '',
-avo: '',
-tipo: 'Nacimiento',
-comuna: '',
-notas: '',
-estado: 'proceso'
-};
-D.proceso.unshift(nueva);
-F.proceso=[...D.proceso];
-P.proceso=1;
-editMode[id] = {...nueva};
-render('proceso');
-actualizarContador();
-localStorage.setItem('actas-zittano', JSON.stringify(D));
-setTimeout(() => {
-const firstInput = document.querySelector(`#row-${id} input`);
-if(firstInput) firstInput.focus();
-}, 100);
+// =============================================
+// ELIMINAR
+// =============================================
+async function eliminar(t, ix) {
+  const a = F[t][ix];
+  if (!confirm(`¿Eliminar la acta de ${a.avo||a.persona}?`)) return;
+
+  toast('Eliminando...', 'loading');
+  const { error } = await sb
+    .from('actas_italia')
+    .delete()
+    .eq('id', a.id);
+
+  if (error) {
+    toast('Error al eliminar: ' + error.message, 'err');
+    return;
+  }
+
+  const ri = D[t].findIndex(x => x.id === a.id);
+  if (ri !== -1) {
+    D[t].splice(ri, 1);
+    F[t] = [...D[t]];
+    render(t);
+    actualizarContador();
+    toast('🗑️ Acta eliminada');
+  }
 }
 
-// DEBUG: Ver qué hay en localStorage
-const guardado=localStorage.getItem('actas-zittano');
-console.log('LocalStorage guardado:', guardado);
+// =============================================
+// NUEVA ACTA
+// =============================================
+async function nuevaActa() {
+  const nueva = {
+    fecha: new Date().toISOString().split('T')[0],
+    persona: '',
+    solicitante: '',
+    padres: '',
+    fechaHecho: '',
+    parentesco: '',
+    pedidaBy: '',
+    avo: '',
+    tipo: 'Nacimiento',
+    comuna: '',
+    notas: '',
+    estado: 'proceso',
+    cliente: ''
+  };
 
-if(guardado){
-try {
-const g=JSON.parse(guardado);
-console.log('Datos parseados:', g);
-console.log('Proceso:', g.proceso);
-console.log('Finalizados:', g.finalizados);
+  toast('Creando acta...', 'loading');
+  const { data, error } = await sb
+    .from('actas_italia')
+    .insert(toRow(nueva))
+    .select()
+    .single();
 
-// Si los datos vienen en formato antiguo (array directo), convertirlos
-if(Array.isArray(g)) {
-console.log('Formato antiguo detectado - migrando...');
-D.proceso = g.filter(a => a.estado === 'proceso').map(a => ({
-...a, 
-solicitante: a.solicitante || '', 
-parentesco: a.parentesco || ''
-}));
-D.finalizados = g.filter(a => a.estado === 'finalizados').map(a => ({
-...a, 
-solicitante: a.solicitante || '', 
-parentesco: a.parentesco || ''
-}));
-} else {
-// Formato nuevo (objeto con proceso y finalizados)
-D.proceso = (g.proceso || []).map(a => ({
-...a, 
-solicitante: a.solicitante || '', 
-parentesco: a.parentesco || ''
-}));
-D.finalizados = (g.finalizados || []).map(a => ({
-...a, 
-solicitante: a.solicitante || '', 
-parentesco: a.parentesco || ''
-}));
-D.comunas = g.comunas || [];
+  if (error) {
+    toast('Error al crear: ' + error.message, 'err');
+    return;
+  }
+
+  const actaCreada = fromRow(data);
+  D.proceso.unshift(actaCreada);
+  F.proceso = [...D.proceso];
+  P.proceso = 1;
+  editMode[actaCreada.id] = { ...actaCreada };
+  render('proceso');
+  actualizarContador();
+  toast('✓ Nueva acta creada');
+
+  setTimeout(() => {
+    const firstInput = document.querySelector(`#row-${actaCreada.id} input`);
+    if (firstInput) firstInput.focus();
+  }, 150);
 }
 
-F.proceso=[...D.proceso];
-F.finalizados=[...D.finalizados];
-
-console.log('D.proceso después de cargar:', D.proceso);
-console.log('D.finalizados después de cargar:', D.finalizados);
-
-// Guardar migración
-localStorage.setItem('actas-zittano', JSON.stringify(D));
-} catch(e) {
-console.error('Error cargando actas:', e);
-}
-} else {
-console.log('No hay datos guardados en localStorage - Cargando datos iniciales del Excel');
-D.proceso = DATOS_INICIALES.proceso || [];
-D.finalizados = DATOS_INICIALES.finalizados || [];
-D.comunas = DATOS_INICIALES.comunas || [];
-F.proceso = [...D.proceso];
-F.finalizados = [...D.finalizados];
-localStorage.setItem('actas-zittano', JSON.stringify(D));
-}
-
-// Renderizar las tablas después de cargar los datos
-console.log('Renderizando tablas...');
-render('proceso');
-render('finalizados');
-renderComunasEuros();
-actualizarContador();
-
-// ===== FUNCIONES PANEL COMUNAS EUROS =====
+// =============================================
+// COMUNAS EUROS
+// =============================================
 function renderComunasEuros() {
-const panel = document.getElementById('panel-comunas-euros');
-if(!D.comunas || D.comunas.length === 0) {
-panel.innerHTML = '<p style="text-align:center;padding:60px;color:#94a3b8;grid-column:1/-1">💶<br>No hay comunas agregadas. Agrega la primera arriba!</p>';
-return;
-}
-
-panel.innerHTML = D.comunas.map(c => {
-const clase = c.cobraEuros ? 'cobra-euros' : 'no-cobra';
-const estadoClase = c.cobraEuros ? 'estado-cobra' : 'estado-no-cobra';
-const estadoTexto = c.cobraEuros ? '💶 Cobra en Euros' : '❌ No cobra';
-return `
-<div class="comuna-card ${clase}">
+  const panel = document.getElementById('panel-comunas-euros');
+  if (!D.comunas || D.comunas.length === 0) {
+    panel.innerHTML = '<p style="text-align:center;padding:60px;color:#94a3b8;grid-column:1/-1">💶<br>No hay comunas. ¡Agregá la primera!</p>';
+    return;
+  }
+  panel.innerHTML = D.comunas.map(c => {
+    const clase = c.cobraEuros ? 'cobra-euros' : 'no-cobra';
+    const estadoClase = c.cobraEuros ? 'estado-cobra' : 'estado-no-cobra';
+    const estadoTexto = c.cobraEuros ? '💶 Cobra en Euros' : '❌ No cobra';
+    return `<div class="comuna-card ${clase}">
 <div class="comuna-nombre">${c.nombre}</div>
 <div class="comuna-estado ${estadoClase}">${estadoTexto}</div>
 <div class="comuna-actions">
-<button class="btn-toggle ${c.cobraEuros ? 'activo' : 'inactivo'}" onclick="toggleEuros('${c.nombre}')">
-${c.cobraEuros ? '✓ Cobra' : '✗ No cobra'}
-</button>
+<button class="btn-toggle ${c.cobraEuros?'activo':'inactivo'}" onclick="toggleEuros('${c.nombre}')">
+${c.cobraEuros ? '✓ Cobra' : '✗ No cobra'}</button>
 <button class="btn-del" onclick="eliminarComuna('${c.nombre}')">🗑️</button>
-</div>
-</div>
-`;
-}).join('');
+</div></div>`;
+  }).join('');
 }
 
-function agregarComuna() {
-const input = document.getElementById('input-nueva-comuna');
-const nombre = input.value.trim();
-if(!nombre) {
-alert('Escribe el nombre de la comuna');
-return;
-}
-if(D.comunas.find(c => c.nombre.toLowerCase() === nombre.toLowerCase())) {
-alert('Esta comuna ya existe');
-return;
-}
-D.comunas.push({ nombre, cobraEuros: false });
-D.comunas.sort((a, b) => a.nombre.localeCompare(b.nombre));
-localStorage.setItem('actas-zittano', JSON.stringify(D));
-input.value = '';
-renderComunasEuros();
+async function agregarComuna() {
+  const input = document.getElementById('input-nueva-comuna');
+  const nombre = input.value.trim();
+  if (!nombre) { alert('Escribe el nombre de la comuna'); return; }
+  if (D.comunas.find(c => c.nombre.toLowerCase() === nombre.toLowerCase())) {
+    alert('Esta comuna ya existe'); return;
+  }
+  toast('Guardando...', 'loading');
+  const { error } = await sb
+    .from('comunas_euros')
+    .insert({ nombre, cobra_euros: false });
+
+  if (error) { toast('Error: ' + error.message, 'err'); return; }
+
+  D.comunas.push({ nombre, cobraEuros: false });
+  D.comunas.sort((a, b) => a.nombre.localeCompare(b.nombre));
+  input.value = '';
+  renderComunasEuros();
+  toast('✓ Comuna agregada');
 }
 
-function toggleEuros(nombre) {
-const comuna = D.comunas.find(c => c.nombre === nombre);
-if(comuna) {
-comuna.cobraEuros = !comuna.cobraEuros;
-localStorage.setItem('actas-zittano', JSON.stringify(D));
-renderComunasEuros();
-}
+async function toggleEuros(nombre) {
+  const c = D.comunas.find(x => x.nombre === nombre);
+  if (!c) return;
+  const nuevo = !c.cobraEuros;
+  const { error } = await sb
+    .from('comunas_euros')
+    .update({ cobra_euros: nuevo })
+    .eq('nombre', nombre);
+
+  if (error) { toast('Error: ' + error.message, 'err'); return; }
+  c.cobraEuros = nuevo;
+  renderComunasEuros();
 }
 
-function eliminarComuna(nombre) {
-if(!confirm(`¿Eliminar la comuna ${nombre}?`)) return;
-D.comunas = D.comunas.filter(c => c.nombre !== nombre);
-localStorage.setItem('actas-zittano', JSON.stringify(D));
-renderComunasEuros();
+async function eliminarComuna(nombre) {
+  if (!confirm(`¿Eliminar la comuna ${nombre}?`)) return;
+  const { error } = await sb
+    .from('comunas_euros')
+    .delete()
+    .eq('nombre', nombre);
+
+  if (error) { toast('Error: ' + error.message, 'err'); return; }
+  D.comunas = D.comunas.filter(c => c.nombre !== nombre);
+  renderComunasEuros();
+  toast('🗑️ Comuna eliminada');
 }
 
-// Evento Enter en input de nueva comuna
-setTimeout(() => {
-const input = document.getElementById('input-nueva-comuna');
-if(input) {
-input.addEventListener('keypress', (e) => {
-if(e.key === 'Enter') agregarComuna();
+// Enter en input nueva comuna
+document.getElementById('input-nueva-comuna').addEventListener('keypress', e => {
+  if (e.key === 'Enter') agregarComuna();
 });
-}
-}, 100);
 
-render('proceso');
-render('finalizados');
-renderComunasEuros();
-actualizarContador();
+// =============================================
+// ARRANCAR
+// =============================================
+cargarDatos();
 </script>
 </body>
 </html>
