@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zittano — Rescate de Datos</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:#f0f4ff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{background:#fff;border-radius:18px;box-shadow:0 8px 40px rgba(0,51,153,.12);padding:44px 48px;width:100%;max-width:600px}
+h1{font-size:22px;font-weight:800;color:#1e1e2e;margin-bottom:4px}
+.sub{font-size:14px;color:#aaa;margin-bottom:30px}
+.counters{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:22px}
+.cnt{background:#f8faff;border-radius:10px;padding:14px;text-align:center;border:1px solid #e2e8f0}
+.cnt-n{font-size:28px;font-weight:800;color:#003399}
+.cnt-n.green{color:#16a34a}.cnt-n.red{color:#ef4444}
+.cnt-l{font-size:10px;font-weight:700;color:#bbb;letter-spacing:.8px;text-transform:uppercase;margin-top:2px}
+.bar-wrap{background:#f0f0f0;border-radius:8px;height:10px;overflow:hidden;margin-bottom:8px}
+.bar-fill{background:linear-gradient(90deg,#003399,#009246);height:100%;border-radius:8px;width:0%;transition:width .3s}
+.status{font-size:13px;color:#666;margin-bottom:16px;min-height:18px}
+.log{background:#0d1117;color:#e6edf3;border-radius:10px;padding:16px;height:260px;overflow-y:auto;font-size:12px;font-family:'Courier New',monospace;margin-bottom:20px;line-height:1.8}
+.log .ok{color:#3fb950}.log .err{color:#f85149}.log .info{color:#79c0ff}.log .warn{color:#e3b341}
+.btn{width:100%;padding:15px;background:linear-gradient(135deg,#003399,#0044cc);color:#fff;border:none;border-radius:11px;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;box-shadow:0 4px 16px rgba(0,51,153,.25);margin-bottom:10px}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn.done{background:linear-gradient(135deg,#009246,#16a34a)}
+.btn.secondary{background:linear-gradient(135deg,#64748b,#475569);box-shadow:none}
+.warning{background:#fffbeb;border:1px solid #fde68a;border-radius:9px;padding:12px 16px;font-size:13px;color:#92400e;margin-bottom:20px;line-height:1.6}
+.empty{background:#fdecea;border:1px solid #fca5a5;border-radius:9px;padding:20px;font-size:13px;color:#991b1b;text-align:center;display:none}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>🛟 Rescate de Actas — Zittano</h1>
+  <div class="sub">Esta herramienta recupera las actas guardadas en este navegador y las sube a Supabase</div>
+
+  <div class="counters">
+    <div class="cnt"><div class="cnt-n" id="n-local">—</div><div class="cnt-l">En este navegador</div></div>
+    <div class="cnt"><div class="cnt-n green" id="n-subidas">0</div><div class="cnt-l">Subidas</div></div>
+    <div class="cnt"><div class="cnt-n red" id="n-errores">0</div><div class="cnt-l">Errores</div></div>
+  </div>
+
+  <div class="bar-wrap"><div class="bar-fill" id="barra"></div></div>
+  <div class="status" id="status">Listo para escanear este navegador...</div>
+
+  <div class="log" id="log"><span class="info">⏳ Esperando... Presioná "Escanear" para ver qué hay en este navegador.</span></div>
+
+  <div class="empty" id="empty">
+    😔 <strong>No se encontraron actas en este navegador.</strong><br>
+    Las actas no estaban guardadas acá. Probá en otro navegador o computadora.
+  </div>
+
+  <button class="btn" id="btn-scan" onclick="escanear()">🔍 Escanear este navegador</button>
+  <button class="btn" id="btn-subir" onclick="subirDatos()" disabled style="display:none">☁️ Subir actas a Supabase</button>
+  <button class="btn secondary" onclick="window.location='https://zittano.github.io/actas-italia-zittano/'" style="margin-top:4px">← Volver al sistema</button>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://gcbmsbkkzodmszrqtdfb.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_8DaoozfaLFtaYjwa220GpQ_jAhj_BkB';
+const CORTE = new Date('2026-04-29'); // Solo actas creadas después de esta fecha
+
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let actasParaSubir = [];
+let subidas = 0, errores = 0;
+
+function log(msg, tipo='info') {
+  const div = document.getElementById('log');
+  div.innerHTML += `<div class="${tipo}">${msg}</div>`;
+  div.scrollTop = div.scrollHeight;
+}
+
+function escanear() {
+  document.getElementById('log').innerHTML = '';
+  actasParaSubir = [];
+  document.getElementById('btn-scan').disabled = true;
+  document.getElementById('empty').style.display = 'none';
+
+  log('🔍 Escaneando localStorage...', 'info');
+
+  // Buscar en todas las keys posibles
+  const keys = ['actas-zittano', 'actas_zittano', 'zittano-actas', 'actas'];
+  let encontrado = false;
+
+  for (const key of keys) {
+    const raw = localStorage.getItem(key);
+    if (raw) {
+      log(`✅ Encontré datos en key: "${key}"`, 'ok');
+      encontrado = true;
+      try {
+        const data = JSON.parse(raw);
+        procesarDatos(data, key);
+      } catch(e) {
+        log(`❌ Error al parsear "${key}": ${e.message}`, 'err');
+      }
+    }
+  }
+
+  if (!encontrado) {
+    log('⚠️ No se encontraron datos en localStorage', 'warn');
+    log('Probá abrir esta página en otro navegador o computadora', 'warn');
+    document.getElementById('empty').style.display = 'block';
+    document.getElementById('n-local').textContent = '0';
+  }
+
+  document.getElementById('btn-scan').disabled = false;
+}
+
+function procesarDatos(data, key) {
+  let todas = [];
+
+  // Formato objeto {proceso: [], finalizados: []}
+  if (data && typeof data === 'object' && !Array.isArray(data)) {
+    const proc = data.proceso || [];
+    const fin = data.finalizados || [];
+    todas = [...proc.map(a => ({...a, estado:'proceso'})), ...fin.map(a => ({...a, estado:'finalizados'}))];
+    log(`📋 Encontré ${proc.length} en proceso + ${fin.length} finalizados = ${todas.length} total`, 'info');
+  }
+  // Formato array directo
+  else if (Array.isArray(data)) {
+    todas = data;
+    log(`📋 Encontré ${todas.length} actas en formato array`, 'info');
+  }
+
+  if (todas.length === 0) {
+    log('⚠️ El storage no tiene actas', 'warn');
+    return;
+  }
+
+  // Mostrar todas sin filtrar por fecha (para que vean qué hay)
+  actasParaSubir = todas;
+  document.getElementById('n-local').textContent = todas.length;
+
+  log(``, 'info');
+  log(`📊 Resumen de actas encontradas:`, 'info');
+  todas.slice(0, 5).forEach(a => {
+    log(`  → ${a.persona || a.solicitante || '(sin nombre)'} | ${a.avo || ''} | ${a.fecha || ''} | ${a.estado || 'proceso'}`, 'ok');
+  });
+  if (todas.length > 5) log(`  ... y ${todas.length - 5} más`, 'info');
+
+  if (todas.length > 0) {
+    document.getElementById('btn-subir').style.display = 'block';
+    document.getElementById('btn-subir').disabled = false;
+    document.getElementById('status').textContent = `Listas ${todas.length} actas para subir a Supabase`;
+  }
+}
+
+async function subirDatos() {
+  if (actasParaSubir.length === 0) return;
+
+  document.getElementById('btn-subir').disabled = true;
+  document.getElementById('btn-scan').disabled = true;
+  subidas = 0; errores = 0;
+
+  log('', 'info');
+  log(`🚀 Iniciando subida de ${actasParaSubir.length} actas a Supabase...`, 'info');
+  log('⚠️ Las actas duplicadas serán ignoradas automáticamente', 'warn');
+
+  for (let i = 0; i < actasParaSubir.length; i++) {
+    const a = actasParaSubir[i];
+    const pct = Math.round(((i+1)/actasParaSubir.length)*100);
+    document.getElementById('barra').style.width = pct + '%';
+    document.getElementById('status').textContent = `Subiendo ${i+1} de ${actasParaSubir.length}...`;
+
+    const row = {
+      fecha: a.fecha || null,
+      persona: a.persona || a.solicitante || '',
+      solicitante: a.solicitante || '',
+      avo: a.avo || '',
+      tipo: a.tipo || 'Nacimiento',
+      comuna: a.comuna || '',
+      notas: a.notas || '',
+      estado: a.estado || 'proceso',
+      padres: a.padres || '',
+      fecha_hecho: a.fechaHecho || a.fecha_hecho || '',
+      parentesco: a.parentesco || '',
+      pedida_by: a.pedidaBy || a.pedida_by || '',
+      cliente: a.cliente || a.solicitante || ''
+    };
+
+    // Intentar insertar — si ya existe con los mismos datos, ignorar
+    const { error } = await sb.from('actas_italia').insert(row);
+
+    if (error) {
+      // Si es duplicado, no es un error real
+      if (error.code === '23505' || error.message.includes('duplicate')) {
+        log(`⏭️ Ya existe: ${row.persona} | ${row.avo}`, 'warn');
+      } else {
+        errores++;
+        document.getElementById('n-errores').textContent = errores;
+        log(`❌ Error en ${row.persona}: ${error.message}`, 'err');
+      }
+    } else {
+      subidas++;
+      document.getElementById('n-subidas').textContent = subidas;
+      if (subidas <= 10 || subidas % 20 === 0) {
+        log(`✅ Subida: ${row.persona || '(sin nombre)'} | ${row.avo || ''} | ${row.fecha || ''}`, 'ok');
+      }
+    }
+
+    // Pequeña pausa para no saturar
+    if (i % 10 === 0) await new Promise(r => setTimeout(r, 100));
+  }
+
+  document.getElementById('status').textContent = `✅ Terminado: ${subidas} subidas, ${errores} errores`;
+  document.getElementById('barra').style.width = '100%';
+  log('', 'info');
+  log(`🎉 ¡LISTO! ${subidas} actas subidas a Supabase`, 'ok');
+  if (errores > 0) log(`⚠️ ${errores} errores — revisá los mensajes en rojo`, 'warn');
+  log('Podés volver al sistema y verificar que todo esté', 'info');
+
+  const btn = document.getElementById('btn-subir');
+  btn.textContent = '✅ Subida completada — Volver al sistema';
+  btn.classList.add('done');
+  btn.disabled = false;
+  btn.onclick = () => window.location = 'https://zittano.github.io/actas-italia-zittano/';
+}
+</script>
+</body>
+</html>
