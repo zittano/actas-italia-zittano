@@ -254,6 +254,16 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
 .busta-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 12px;border-radius:12px;font-size:11px;font-weight:700}
 .busta-si{background:#fef3c7;color:#b45309;border:1.5px solid #fcd34d}
 .busta-no{background:#dcfce7;color:#15803d;border:1.5px solid #86efac}
+
+/* CERCANÍA */
+.cercania-card{background:#fff;border:1px solid var(--bo);border-radius:12px;margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow)}
+.cercania-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:#f8fafc;border-bottom:1px solid #eef2f7}
+.cercania-km{display:inline-block;color:#fff;font-size:12px;font-weight:800;padding:4px 12px;border-radius:20px;margin-right:10px}
+.cercania-comuna{font-weight:700;font-size:15px;color:#1e293b}
+.cercania-cnt{font-size:11px;font-weight:700;color:#64748b;background:#e2e8f0;padding:3px 12px;border-radius:12px}
+.cercania-actas{padding:12px 20px}
+.cercania-acta{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f5f7fa;font-size:13px;flex-wrap:wrap}
+.cercania-acta:last-child{border-bottom:none}
 .htab .admin-badge{background:rgba(255,220,100,.2);color:#ffd700;border:1px solid rgba(255,220,100,.3);padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;margin-left:6px}
 </style>
 </head>
@@ -285,6 +295,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
 <button class="htab on" onclick="cambiar('proceso')" data-tab="proceso">En Proceso</button>
 <button class="htab" onclick="cambiar('finalizados')" data-tab="finalizados">Finalizados</button>
 <button class="htab" onclick="cambiar('euros')" data-tab="euros">💶 Comunas - Euros</button>
+<button class="htab" onclick="cambiar('cercania')" data-tab="cercania">🧭 Cercanía</button>
 <button class="htab" id="tab-admin" style="display:none" onclick="cambiar('admin')" data-tab="admin">🗺️ Comunas Admin <span class="admin-badge">🔒</span></button>
 </div>
 <div class="gchip">
@@ -387,6 +398,27 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
 </button>
 </div>
 <div class="panel-euros" id="panel-comunas-euros"></div>
+</div>
+</div>
+
+<!-- VISTA CERCANÍA -->
+<div class="view" id="v-cercania">
+<div class="vbody">
+<div class="admin-header" style="background:linear-gradient(135deg,#065f46,#059669)">
+  <div>
+    <h2>🧭 Partidas por Cercanía</h2>
+    <p>Ingresá dónde estás y mirá qué actas en proceso tenés cerca</p>
+  </div>
+</div>
+<div class="toolbar" style="flex-wrap:wrap">
+  <input type="text" class="input-nueva-comuna" id="input-ubicacion" placeholder="📍 ¿Dónde estás? (ej: Cosenza, Roma, Nápoles...)" style="max-width:340px" onkeypress="if(event.key==='Enter')buscarCercanas()">
+  <button class="btn-add" style="background:linear-gradient(135deg,#065f46,#059669)" onclick="buscarCercanas()">
+    <span style="font-size:16px">🔎</span>
+    <span style="font-weight:700">Buscar cerca</span>
+  </button>
+</div>
+<div id="cercania-status" style="font-size:13px;color:#64748b;margin-bottom:16px"></div>
+<div id="cercania-resultados"></div>
 </div>
 </div>
 
@@ -1431,6 +1463,158 @@ window.cambiar = async function(v) {
   }
   _cambiarOriginal(v);
 };
+
+// =============================================
+// CERCANÍA
+// =============================================
+let coordsCache = {}; // comuna limpia → {lat, lng}
+let coordsCargadas = false;
+
+function limpiarComuna(c) {
+  if (!c) return '';
+  // Tomar solo la primera parte antes de coma, paréntesis, "ó", "/", "provincia"
+  let limpia = c.split(/[,(\/]|\bó\b| provincia/i)[0].trim();
+  return limpia;
+}
+
+async function cargarCoordsCache() {
+  if (coordsCargadas) return;
+  const { data } = await sb.from('comuna_coords').select('*');
+  (data || []).forEach(r => {
+    coordsCache[r.comuna] = (r.lat != null) ? { lat: r.lat, lng: r.lng } : null;
+  });
+  coordsCargadas = true;
+}
+
+async function geocodificar(nombre) {
+  // nombre ya limpio. Buscar en Nominatim (OpenStreetMap)
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(nombre + ', Italia')}&format=json&limit=1&countrycodes=it`;
+    const res = await fetch(url, { headers: { 'Accept-Language': 'it' } });
+    const json = await res.json();
+    if (json && json.length > 0) {
+      return { lat: parseFloat(json[0].lat), lng: parseFloat(json[0].lon) };
+    }
+  } catch(e) { console.error('Geocoding error:', e); }
+  return null;
+}
+
+async function obtenerCoords(comunaOriginal) {
+  const limpia = limpiarComuna(comunaOriginal);
+  if (!limpia) return null;
+  if (limpia in coordsCache) return coordsCache[limpia];
+
+  // No está en caché → geocodificar y guardar
+  const coords = await geocodificar(limpia);
+  coordsCache[limpia] = coords;
+  // Guardar en Supabase (aunque sea null, para no re-buscar)
+  await sb.from('comuna_coords').upsert(
+    { comuna: limpia, lat: coords?.lat ?? null, lng: coords?.lng ?? null },
+    { onConflict: 'comuna' }
+  );
+  // Respetar rate limit de Nominatim (1 req/seg)
+  await new Promise(r => setTimeout(r, 1100));
+  return coords;
+}
+
+function distanciaKm(a, b) {
+  const R = 6371;
+  const dLat = (b.lat - a.lat) * Math.PI / 180;
+  const dLng = (b.lng - a.lng) * Math.PI / 180;
+  const x = Math.sin(dLat/2)**2 + Math.cos(a.lat*Math.PI/180) * Math.cos(b.lat*Math.PI/180) * Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1-x));
+}
+
+let buscandoCercanas = false;
+
+async function buscarCercanas() {
+  if (buscandoCercanas) return;
+  const input = document.getElementById('input-ubicacion');
+  const status = document.getElementById('cercania-status');
+  const resultados = document.getElementById('cercania-resultados');
+  const ubicacion = input.value.trim();
+  if (!ubicacion) { alert('Escribí dónde estás'); return; }
+
+  buscandoCercanas = true;
+  resultados.innerHTML = '';
+  status.textContent = '📍 Ubicando "' + ubicacion + '"...';
+
+  await cargarCoordsCache();
+
+  // Geocodificar el punto de referencia (no lo cacheamos, puede ser cualquier lugar)
+  const origen = await geocodificar(ubicacion);
+  if (!origen) {
+    status.textContent = '❌ No pude ubicar "' + ubicacion + '". Probá con otro nombre.';
+    buscandoCercanas = false;
+    return;
+  }
+
+  // Comunas únicas de las actas en proceso
+  const comunasUnicas = [...new Set(D.proceso.map(a => limpiarComuna(a.comuna)).filter(Boolean))];
+  const sinCache = comunasUnicas.filter(c => !(c in coordsCache));
+
+  if (sinCache.length > 0) {
+    status.textContent = `🌍 Ubicando ${sinCache.length} comunas nuevas (esto tarda ~${Math.ceil(sinCache.length * 1.2 / 60)} min la primera vez, después queda guardado)...`;
+  }
+
+  let procesadas = 0;
+  for (const c of sinCache) {
+    await obtenerCoords(c);
+    procesadas++;
+    if (procesadas % 5 === 0) {
+      status.textContent = `🌍 Ubicando comunas... ${procesadas}/${sinCache.length}`;
+    }
+  }
+
+  // Calcular distancias por comuna
+  const porComuna = {};
+  D.proceso.forEach(a => {
+    const limpia = limpiarComuna(a.comuna);
+    if (!limpia) return;
+    if (!porComuna[limpia]) porComuna[limpia] = { actas: [], coords: coordsCache[limpia] };
+    porComuna[limpia].actas.push(a);
+  });
+
+  const conDistancia = [];
+  const sinUbicar = [];
+  Object.entries(porComuna).forEach(([nombre, info]) => {
+    if (info.coords) {
+      conDistancia.push({ nombre, actas: info.actas, km: distanciaKm(origen, info.coords) });
+    } else {
+      sinUbicar.push({ nombre, actas: info.actas });
+    }
+  });
+
+  conDistancia.sort((a, b) => a.km - b.km);
+
+  status.textContent = `✅ ${conDistancia.length} comunas ubicadas desde "${ubicacion}"` + (sinUbicar.length ? ` — ${sinUbicar.length} no se pudieron ubicar` : '');
+
+  resultados.innerHTML = conDistancia.map(c => {
+    const color = c.km < 50 ? '#059669' : c.km < 150 ? '#d97706' : '#64748b';
+    return `<div class="cercania-card">
+<div class="cercania-header">
+  <div>
+    <span class="cercania-km" style="background:${color}">${Math.round(c.km)} km</span>
+    <span class="cercania-comuna">${c.nombre}</span>
+  </div>
+  <span class="cercania-cnt">${c.actas.length} acta${c.actas.length>1?'s':''}</span>
+</div>
+<div class="cercania-actas">
+${c.actas.map(a => `<div class="cercania-acta">
+  <strong>${a.avo || a.persona || ''}</strong>
+  <span class="tipo-badge tipo-${(a.tipo||'').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}">${a.tipo||''}</span>
+  ${a.solicitante ? `<span class="solicitante-badge sol-${(a.solicitante||'').toLowerCase()}">${a.solicitante}</span>` : ''}
+  <span style="color:#94a3b8;font-size:11px">${a.comuna}</span>
+</div>`).join('')}
+</div>
+</div>`;
+  }).join('') + (sinUbicar.length ? `<div class="cercania-card" style="border-left:4px solid #94a3b8">
+<div class="cercania-header"><span class="cercania-comuna">📌 No se pudieron ubicar</span></div>
+<div class="cercania-actas">${sinUbicar.map(c => `<div class="cercania-acta">${c.nombre} (${c.actas.length})</div>`).join('')}</div>
+</div>` : '');
+
+  buscandoCercanas = false;
+}
 
 // =============================================
 // ARRANCAR
