@@ -432,10 +432,17 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
 </div>
 <div class="login-logo">ZITTANO</div>
 <div class="login-sub">Actas Italia</div>
-<div class="login-title">Ingresá tu clave para continuar</div>
-<input type="password" class="login-input" id="login-input" placeholder="••••••••••" onkeypress="if(event.key==='Enter')hacerLogin()">
-<button class="login-btn" onclick="hacerLogin()">Ingresar →</button>
-<div class="login-err" id="login-err">⚠️ Clave incorrecta. Intentá de nuevo.</div>
+<div class="login-title">Entrá con tu usuario del Sistema</div>
+<select class="login-input" id="login-gestor" aria-label="¿Quién sos?" style="margin-bottom:10px">
+  <option value="">¿Quién sos?</option>
+  <option>Belén</option>
+  <option>Germán</option>
+  <option>Malena</option>
+  <option>Sofía</option>
+</select>
+<input type="password" class="login-input" id="login-input" placeholder="Contraseña del Sistema" aria-label="Contraseña" onkeypress="if(event.key==='Enter')hacerLogin()">
+<button class="login-btn" id="login-btn" onclick="hacerLogin()">Ingresar →</button>
+<div class="login-err" id="login-err">⚠️ Usuario o contraseña incorrectos. Intentá de nuevo.</div>
 </div>
 </div>
 
@@ -1118,28 +1125,43 @@ document.getElementById('input-nueva-comuna').addEventListener('keypress', e => 
 // =============================================
 // LOGIN
 // =============================================
-const CLAVES = {
-  'zittanotkm': 'admin',
-  'malezittano': 'equipo',
-  'sofizittano': 'equipo'
+// Login real con Supabase: mismas cuentas que el Sistema Zittano.
+// La base solo responde a usuarios logueados, así que no hay claves en el código.
+const EMAIL_POR_GESTOR = {
+  'Malena': 'zittanogestoria@gmail.com',
+  'Sofía': 'somoszittano@gmail.com',
+  'Belén': 'mbloccisano@gmail.com',
+  'Germán': 'duttogerman@gmail.com',
 };
+const ADMINS = ['Belén', 'Germán'];   // ven la pestaña "Comunas Admin"
 let rolActual = null;
 
-function hacerLogin() {
-  const clave = document.getElementById('login-input').value.trim();
-  const rol = CLAVES[clave];
-  if (!rol) {
-    document.getElementById('login-err').style.display = 'block';
+async function entrarComo(user) {
+  const { data: perfil, error } = await sb.from('profiles').select('gestor,is_admin').eq('id', user.id).single();
+  if (error || !perfil) { await sb.auth.signOut(); return false; }
+  rolActual = (perfil.is_admin || ADMINS.includes(perfil.gestor)) ? 'admin' : 'equipo';
+  document.getElementById('login-overlay').style.display = 'none';
+  document.getElementById('tab-admin').style.display = rolActual === 'admin' ? 'flex' : 'none';
+  cargarDatos();
+  return true;
+}
+
+async function hacerLogin() {
+  const gestor = document.getElementById('login-gestor').value;
+  const pwd = document.getElementById('login-input').value;
+  const err = document.getElementById('login-err');
+  const btn = document.getElementById('login-btn');
+  err.style.display = 'none';
+  if (!gestor || !pwd) { err.style.display = 'block'; return; }
+  btn.disabled = true; btn.textContent = 'Entrando...';
+  const { data, error } = await sb.auth.signInWithPassword({ email: EMAIL_POR_GESTOR[gestor], password: pwd });
+  const ok = !error && data && data.user && await entrarComo(data.user);
+  btn.disabled = false; btn.textContent = 'Ingresar →';
+  if (!ok) {
+    err.style.display = 'block';
     document.getElementById('login-input').value = '';
     document.getElementById('login-input').focus();
-    return;
   }
-  rolActual = rol;
-  document.getElementById('login-overlay').style.display = 'none';
-  if (rol === 'admin') {
-    document.getElementById('tab-admin').style.display = 'flex';
-  }
-  cargarDatos();
 }
 
 // =============================================
@@ -1630,8 +1652,12 @@ ${c.actas.map(a => `<div class="cercania-acta">
     });
   }
 })();
-document.getElementById('login-overlay').style.display = 'flex';
-setTimeout(() => document.getElementById('login-input').focus(), 100);
+// Si ya había una sesión abierta (por ejemplo, del Sistema), entra directo
+sb.auth.getSession().then(async ({ data }) => {
+  if (data && data.session && await entrarComo(data.session.user)) return;
+  document.getElementById('login-overlay').style.display = 'flex';
+  setTimeout(() => document.getElementById('login-gestor').focus(), 100);
+});
 </script>
 </body>
 </html>
