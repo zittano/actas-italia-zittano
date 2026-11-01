@@ -74,7 +74,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
 .tipo-matrimonio{background:#fce7f3;color:#9d174d}
 .tipo-defuncion{background:#fef3c7;color:#92400e}
 .tipo-bautismo{background:#dbeafe;color:#1e40af}
-.solicitante-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;color:#fff;letter-spacing:.3px}
+.solicitante-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;color:#fff;letter-spacing:.3px;background:#64748b}
 .sol-belen{background:linear-gradient(135deg,#e91e63,#c2185b)}
 .sol-german{background:linear-gradient(135deg,#2196f3,#1565c0)}
 .sol-pau{background:linear-gradient(135deg,#ff9800,#e65100)}
@@ -265,6 +265,66 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
 .cercania-acta{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f5f7fa;font-size:13px;flex-wrap:wrap}
 .cercania-acta:last-child{border-bottom:none}
 .htab .admin-badge{background:rgba(255,220,100,.2);color:#ffd700;border:1px solid rgba(255,220,100,.3);padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;margin-left:6px}
+
+/* ===== SEGUIMIENTO DE ACTAS (estado, novedades, envíos) ===== */
+.etapa-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:10.5px;font-weight:700;white-space:nowrap}
+.et-pedida{background:#e0e7ff;color:#3730a3}
+.et-tasa{background:#fef3c7;color:#92400e}
+.et-reclamada{background:#ffedd5;color:#9a3412}
+.et-digital{background:#cffafe;color:#155e75}
+.et-camino{background:#dbeafe;color:#1e40af}
+.et-oficina{background:#dcfce7;color:#166534}
+.et-entregada{background:#e2e8f0;color:#334155}
+.et-negativa{background:#fee2e2;color:#991b1b}
+.estado-cell{min-width:190px}
+.estado-linea{font-size:11px;color:#475569;margin-top:4px;line-height:1.35}
+.estado-linea b{color:#1e293b}
+.novedad-txt{font-size:11px;color:#334155;margin-top:4px;background:#f8fafc;border-left:3px solid #c7d2fe;padding:3px 6px;border-radius:4px;max-width:260px}
+.novedad-txt.vieja{border-left-color:#fca5a5}
+.campana{display:inline-block;background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:12px;font-size:10px;font-weight:700;padding:1px 7px;margin-top:4px}
+.btn-estado{padding:5px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-weight:700;border:none;background:linear-gradient(135deg,#1a1f6e,#2d35a8);color:#fff}
+.btn-pedir{padding:5px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-weight:700;border:1.5px solid #fcd34d;background:#fffbeb;color:#92400e}
+.filtros-estado{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;align-items:center}
+.fchip{padding:6px 12px;border-radius:20px;border:1.5px solid #dde3f0;background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:#334155;white-space:nowrap}
+.fchip .n{display:inline-block;margin-left:5px;background:#f1f5f9;border-radius:10px;padding:0 6px;font-size:11px}
+.fchip.on{background:#1a1f6e;color:#fff;border-color:#1a1f6e}
+.fchip.on .n{background:rgba(255,255,255,.2)}
+.fchip.alerta{border-color:#fcd34d;background:#fffbeb;color:#92400e}
+.fchip.alerta.on{background:#d97706;color:#fff;border-color:#d97706}
+.fchip.rojo{border-color:#fca5a5;background:#fef2f2;color:#991b1b}
+.fchip.rojo.on{background:#dc2626;color:#fff;border-color:#dc2626}
+.fsep{width:1px;height:22px;background:#dde3f0;margin:0 4px}
+.aviso-sql{background:#fef3c7;border:1.5px solid #fcd34d;color:#78350f;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:14px;display:none}
+.mod-ov{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:flex-start;justify-content:center;z-index:500;padding:30px 12px;overflow-y:auto}
+.mod-ov.on{display:flex}
+.mod{background:#fff;border-radius:16px;max-width:620px;width:100%;box-shadow:var(--shadow-lg);overflow:hidden}
+.mod-h{background:linear-gradient(135deg,#1a1f6e,#2d35a8);color:#fff;padding:16px 20px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.mod-h h3{font-family:"DM Serif Display",serif;font-weight:400;font-size:20px}
+.mod-h .sub{font-size:12px;opacity:.85;margin-top:3px}
+.mod-x{background:rgba(255,255,255,.15);border:none;color:#fff;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:15px;flex-shrink:0}
+.mod-b{padding:18px 20px}
+.mod-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mod-f label{display:block;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.mod-f input,.mod-f select,.mod-f textarea{width:100%;padding:9px 11px;border:1.5px solid #dde3f0;border-radius:8px;font-family:"DM Sans",sans-serif;font-size:14px;outline:none;background:#fff}
+.mod-f input:focus,.mod-f select:focus,.mod-f textarea:focus{border-color:#2d35a8}
+.mod-f textarea{min-height:64px;resize:vertical}
+.mod-full{grid-column:1/-1}
+.mod-hint{font-size:11px;color:#94a3b8;margin-top:3px}
+.mod-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 20px;border-top:1px solid #eef1f7;background:#fafbfe}
+.btn-mod{padding:10px 18px;border-radius:9px;font-weight:700;font-size:13px;cursor:pointer;border:none}
+.btn-mod.pri{background:linear-gradient(135deg,#00854a,#00a85a);color:#fff}
+.btn-mod.sec{background:#f1f5f9;color:#334155}
+.hist{margin-top:16px;border-top:1px solid #eef1f7;padding-top:12px}
+.hist h4{font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px}
+.hist-item{display:flex;gap:10px;font-size:12.5px;padding:6px 0;border-bottom:1px dashed #eef1f7}
+.hist-item:last-child{border-bottom:none}
+.hist-f{color:#94a3b8;white-space:nowrap;min-width:78px}
+.hist-q{color:#2d35a8;font-weight:700;white-space:nowrap}
+.envio-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #eef1f7;flex-wrap:wrap}
+.envio-row:last-child{border-bottom:none}
+.envio-n{font-weight:700;color:#1a1f6e}
+.envio-m{font-size:12px;color:#64748b}
+@media (max-width:640px){.mod-grid{grid-template-columns:1fr}.filtros-estado{gap:6px}.fchip{font-size:11px;padding:5px 10px}}
 </style>
 </head>
 <body>
@@ -307,6 +367,8 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
 
 <div class="view on" id="v-proceso">
 <div class="vbody">
+<div class="aviso-sql" id="aviso-sql">⚠️ Falta correr el SQL de seguimiento en Supabase (archivo <b>actas_seguimiento.sql</b>). Hasta entonces no se pueden guardar estados ni novedades; lo demás funciona igual.</div>
+<div class="filtros-estado" id="filtros-estado"></div>
 <div class="leyenda-edad">
 <span style="font-weight:700;color:#475569">⏱️ Antigüedad del pedido:</span>
 <span class="leyenda-item"><span class="leyenda-dot" style="background:#eab308"></span> 2-8 meses</span>
@@ -318,6 +380,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
 <input type="text" placeholder="🔍 Buscar actas..." id="s-proceso" onkeyup="filtrar('proceso')">
 </div>
 <button class="btn-agrupar" id="btn-agrupar-proceso" onclick="toggleAgrupar('proceso')">🗺️ Agrupar por provincia</button>
+<button class="btn-agrupar" onclick="abrirEnvios()">📦 Envíos</button>
 <button class="btn-add" onclick="nuevaActa()">
 <span style="font-size:16px;margin-right:6px">📋</span>
 <span style="font-weight:700">Nueva Acta</span>
@@ -327,6 +390,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
 <table class="actas-table">
 <thead><tr>
 <th style="width:90px">Fecha</th>
+<th style="width:210px">📍 Estado</th>
 <th style="width:110px">CLIENTE</th>
 <th style="width:200px">AVO</th>
 <th style="width:200px">Nombre de los Padres</th>
@@ -359,6 +423,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
 <table class="actas-table">
 <thead><tr>
 <th style="width:90px">Fecha</th>
+<th style="width:210px">📍 Estado</th>
 <th style="width:110px">CLIENTE</th>
 <th style="width:200px">AVO</th>
 <th style="width:200px">Nombre de los Padres</th>
@@ -463,6 +528,34 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
 </div>
 </div>
 
+
+<!-- MODAL: ACTUALIZAR ESTADO -->
+<div class="mod-ov" id="mod-estado" onclick="if(event.target===this)cerrarMod('mod-estado')">
+<div class="mod">
+<div class="mod-h"><div><h3>📍 Estado del acta</h3><div class="sub" id="me-sub"></div></div><button class="mod-x" onclick="cerrarMod('mod-estado')">✕</button></div>
+<div class="mod-b">
+<div class="mod-grid">
+<div class="mod-f"><label>Estado</label><select id="me-etapa"></select></div>
+<div class="mod-f"><label>Llega aprox.</label><input type="date" id="me-estimada"><div class="mod-hint">Fecha estimada de llegada a la oficina</div></div>
+<div class="mod-f"><label>Copias pedidas</label><input type="number" min="1" id="me-cped"></div>
+<div class="mod-f"><label>Copias llegadas</label><input type="number" min="0" id="me-clleg"></div>
+<div class="mod-f mod-full"><label>Envío</label><input type="text" id="me-envio" list="dl-envios" placeholder="Ej: Envío 20/11 (las actas que viajan juntas)"><datalist id="dl-envios"></datalist></div>
+<div class="mod-f mod-full"><label>Novedad nueva</label><textarea id="me-novedad" placeholder="Ej: Reclamada por teléfono, dicen que sale la semana que viene. / Piden 150 € extra."></textarea><div class="mod-hint">Queda en el historial con fecha y tu nombre. Es lo que las chicas le cuentan al cliente.</div></div>
+</div>
+<div class="hist" id="me-hist"></div>
+</div>
+<div class="mod-foot"><button class="btn-mod sec" onclick="cerrarMod('mod-estado')">Cancelar</button><button class="btn-mod pri" id="me-guardar" onclick="guardarEstado()">💾 Guardar</button></div>
+</div>
+</div>
+
+<!-- MODAL: ENVÍOS -->
+<div class="mod-ov" id="mod-envios" onclick="if(event.target===this)cerrarMod('mod-envios')">
+<div class="mod">
+<div class="mod-h"><div><h3>📦 Envíos desde Italia</h3><div class="sub">Las actas que viajan juntas. Actualizalas todas de un clic.</div></div><button class="mod-x" onclick="cerrarMod('mod-envios')">✕</button></div>
+<div class="mod-b" id="envios-lista"></div>
+</div>
+</div>
+
 <script>
 // =============================================
 // CONFIGURACIÓN SUPABASE
@@ -550,8 +643,13 @@ async function cargarDatos() {
       .order('nombre', { ascending: true });
     // Si la tabla no existe, ignorar error
     
-    D.proceso = proceso || [];
-    D.finalizados = finalizados || [];
+    // Mapear filas de Supabase al formato de la app.
+    // (Antes quedaban crudas: la tabla no mostraba "Pedida by", "Año" ni "Precio"
+    //  y al editar un acta esos campos se guardaban vacíos.)
+    SEGUIMIENTO_OK = (proceso && proceso[0]) ? ('etapa' in proceso[0]) : await chequearSeguimiento();
+    document.getElementById('aviso-sql').style.display = SEGUIMIENTO_OK ? 'none' : 'block';
+    D.proceso = (proceso || []).map(fromRow);
+    D.finalizados = (finalizados || []).map(fromRow);
     D.comunas = (comunas || []).map(c => ({
       nombre: c.nombre,
       cobraEuros: c.cobra_euros,
@@ -561,7 +659,7 @@ async function cargarDatos() {
     F.proceso = [...D.proceso];
     F.finalizados = [...D.finalizados];
 
-    render('proceso');
+    filtrar('proceso');
     render('finalizados');
     renderComunasEuros();
     actualizarContador();
@@ -593,7 +691,14 @@ function toRow(a) {
     pedida_by: a.pedidaBy || '',
     cliente: a.cliente || a.solicitante || '',
     precio_ars: a.precioArs ? parseFloat(a.precioArs) : null,
-    precio_eur: a.precioEur ? parseFloat(a.precioEur) : null
+    precio_eur: a.precioEur ? parseFloat(a.precioEur) : null,
+    ...(SEGUIMIENTO_OK ? {
+      etapa: a.etapa || 'pedida',
+      fecha_estimada: a.fechaEstimada || null,
+      copias_pedidas: a.copiasPedidas ? parseInt(a.copiasPedidas) : 1,
+      copias_llegadas: a.copiasLlegadas ? parseInt(a.copiasLlegadas) : 0,
+      envio: a.envio || null
+    } : {})
   };
 }
 
@@ -616,7 +721,19 @@ function fromRow(r) {
     pedidaBy: r.pedida_by || '',
     cliente: r.cliente || r.solicitante || '',
     precioArs: r.precio_ars || '',
-    precioEur: r.precio_eur || ''
+    precioEur: r.precio_eur || '',
+    etapa: r.etapa || 'pedida',
+    fechaEstimada: r.fecha_estimada || '',
+    copiasPedidas: r.copias_pedidas || 1,
+    copiasLlegadas: r.copias_llegadas || 0,
+    envio: r.envio || '',
+    novedad: r.novedad || '',
+    novedadFecha: r.novedad_fecha || '',
+    novedadBy: r.novedad_by || '',
+    pedidoNovedad: !!r.pedido_novedad,
+    pedidoNovedadBy: r.pedido_novedad_by || '',
+    pedidoNovedadFecha: r.pedido_novedad_fecha || '',
+    historial: Array.isArray(r.historial) ? r.historial : []
   };
 }
 
@@ -648,7 +765,7 @@ function render(t) {
   const d = F[t];
   const p = P[t];
   if (d.length === 0) {
-    tb.innerHTML = '<tr><td colspan="13" style="text-align:center;padding:60px;color:#94a3b8">📋<br>No hay actas</td></tr>';
+    tb.innerHTML = '<tr><td colspan="14" style="text-align:center;padding:60px;color:#94a3b8">📋<br>No hay actas</td></tr>';
     document.getElementById('pg-' + t).innerHTML = '';
     return;
   }
@@ -674,7 +791,7 @@ function render(t) {
       if (regionActual !== regionAnterior) {
         const cnt = d.filter(x => (x.provincia || 'Sin provincia') === regionActual).length;
         const icon = flagsRegion[regionActual] || '📌';
-        separador = `<tr class="region-separador"><td colspan="13">${icon} <strong>${regionActual}</strong> <span class="region-cnt">${cnt} acta${cnt>1?'s':''}</span></td></tr>`;
+        separador = `<tr class="region-separador"><td colspan="14">${icon} <strong>${regionActual}</strong> <span class="region-cnt">${cnt} acta${cnt>1?'s':''}</span></td></tr>`;
         regionAnterior = regionActual;
       }
     }
@@ -682,6 +799,7 @@ function render(t) {
     if (isEdit) {
       return `<tr class="editable-row" id="row-${a.id}">
 <td><input type="date" value="${isEdit.fecha||''}" data-id="${a.id}" data-field="fecha"></td>
+<td style="font-size:11px;color:#94a3b8">${celdaEstado(a)}<div class="mod-hint">Se cambia con 📍 Estado</div></td>
 <td><input type="text" value="${isEdit.solicitante||''}" data-id="${a.id}" data-field="solicitante" placeholder="CLIENTE"></td>
 <td><input type="text" value="${isEdit.avo||''}" data-id="${a.id}" data-field="avo" placeholder="AVO"></td>
 <td><input type="text" value="${isEdit.padres||''}" data-id="${a.id}" data-field="padres" placeholder="Padres"></td>
@@ -729,6 +847,7 @@ ${Object.keys(PROVINCIAS_ITALIA).map(p => `<option value="${p}" ${isEdit.provinc
 
     return separador + `<tr class="${t==='proceso' ? claseAntiguedad(a.fecha) : ''}">
 <td style="white-space:nowrap">${fmt(a.fecha)}${t==='proceso' ? chipAntiguedad(a.fecha) : ''}</td>
+<td class="estado-cell">${celdaEstado(a)}</td>
 <td>${a.solicitante ? `<span class="solicitante-badge sol-${(a.solicitante||'').toLowerCase()}">${a.solicitante}</span>` : '-'}</td>
 <td><strong>${a.avo||a.persona||''}</strong></td>
 <td style="font-size:12px;color:var(--gr)">${a.padres||'-'}</td>
@@ -745,6 +864,8 @@ ${a.precioEur ? `<div style="color:#1d4ed8;font-weight:600">€ ${Number(a.preci
 ${!a.precioArs && !a.precioEur ? '<span style="color:#ccc">—</span>' : ''}
 </td>
 <td><div class="btn-actions">
+<button class="btn-estado" onclick="abrirEstado(${a.id})">📍 Estado</button>
+${t==='proceso'?`<button class="btn-pedir" onclick="pedirNovedad(${a.id})">🔔 Pedir novedad</button>`:''}
 ${t==='proceso'?`<button class="btn-finalizar" onclick="mover('${t}',${ix},'finalizados')">✓ Finalizar</button>`:''}
 ${t==='finalizados'?`<button class="btn-proceso" onclick="mover('${t}',${ix},'proceso')">← En Proceso</button>`:''}
 <button class="btn-edit" onclick="editar('${t}',${ix})">Editar</button>
@@ -820,14 +941,17 @@ function chipAntiguedad(fecha) {
 // =============================================
 function filtrar(t) {
   const q = document.getElementById('s-' + t).value.toLowerCase();
+  let base = [...D[t]];
+  if (t === 'proceso') base = base.filter(pasaFiltroEstado);
   if (!q) {
-    F[t] = [...D[t]];
+    F[t] = base;
   } else {
-    F[t] = D[t].filter(a => {
-      const tx = `${a.persona} ${a.solicitante} ${a.parentesco} ${a.avo} ${a.comuna} ${a.provincia} ${a.tipo} ${a.notas}`.toLowerCase();
+    F[t] = base.filter(a => {
+      const tx = `${a.persona} ${a.solicitante} ${a.parentesco} ${a.avo} ${a.comuna} ${a.provincia} ${a.tipo} ${a.notas} ${a.envio||''} ${a.novedad||''} ${etapaInfo(a.etapa).label}`.toLowerCase();
       return tx.includes(q);
     });
   }
+  if (t === 'proceso') renderFiltros();
   // Mantener el orden agrupado si está activo
   if (agruparPorRegion[t]) {
     F[t].sort((a, b) => {
@@ -866,10 +990,8 @@ async function mover(t, ix, nv) {
     const am = D[t].splice(ri, 1)[0];
     am.estado = nv;
     D[nv].push(am);
-    F.proceso = [...D.proceso];
-    F.finalizados = [...D.finalizados];
-    render('proceso');
-    render('finalizados');
+    filtrar('proceso');
+    filtrar('finalizados');
     actualizarContador();
     toast(nv === 'finalizados' ? '✓ Acta finalizada' : '↩ Volvió a En Proceso');
   }
@@ -911,10 +1033,9 @@ async function guardarEdicion(t, id) {
   const ri = D[t].findIndex(x => x.id === id);
   if (ri !== -1) {
     D[t][ri] = { ...datos };
-    F[t] = [...D[t]];
   }
   delete editMode[id];
-  render(t);
+  filtrar(t);
   actualizarContador();
   toast('✓ Acta guardada');
 }
@@ -940,8 +1061,7 @@ async function eliminar(t, ix) {
   const ri = D[t].findIndex(x => x.id === a.id);
   if (ri !== -1) {
     D[t].splice(ri, 1);
-    F[t] = [...D[t]];
-    render(t);
+    filtrar(t);
     actualizarContador();
     toast('🗑️ Acta eliminada');
   }
@@ -1140,6 +1260,7 @@ async function entrarComo(user) {
   const { data: perfil, error } = await sb.from('profiles').select('gestor,is_admin').eq('id', user.id).single();
   if (error || !perfil) { await sb.auth.signOut(); return false; }
   rolActual = (perfil.is_admin || ADMINS.includes(perfil.gestor)) ? 'admin' : 'equipo';
+  gestorActual = perfil.gestor || '';
   document.getElementById('login-overlay').style.display = 'none';
   document.getElementById('tab-admin').style.display = rolActual === 'admin' ? 'flex' : 'none';
   cargarDatos();
@@ -1637,6 +1758,265 @@ ${c.actas.map(a => `<div class="cercania-acta">
 
   buscandoCercanas = false;
 }
+
+
+// =============================================
+// SEGUIMIENTO: ESTADO, NOVEDADES, ENVÍOS
+// =============================================
+let SEGUIMIENTO_OK = false;   // true cuando ya se corrió actas_seguimiento.sql
+let gestorActual = '';
+let filtroEtapa = 'todas';
+let filtroEspecial = '';       // '', 'mias', 'pedidos', 'reclamar'
+let actaEnModal = null;
+
+const ETAPAS = [
+  { id:'pedida',    label:'Pedida',               ico:'📨', cls:'et-pedida' },
+  { id:'tasa',      label:'Tasa a pagar',         ico:'💶', cls:'et-tasa' },
+  { id:'reclamada', label:'Reclamada',            ico:'📞', cls:'et-reclamada' },
+  { id:'digital',   label:'Llegó digital',        ico:'📧', cls:'et-digital' },
+  { id:'camino',    label:'En camino a Argentina',ico:'✈️', cls:'et-camino' },
+  { id:'oficina',   label:'En oficina',           ico:'🏢', cls:'et-oficina' },
+  { id:'entregada', label:'Entregada al cliente', ico:'✅', cls:'et-entregada' },
+  { id:'negativa',  label:'Negativa',             ico:'⛔', cls:'et-negativa' }
+];
+const ETAPAS_ESPERANDO = ['pedida','tasa','reclamada'];
+const DIAS_RECLAMAR = 60;     // sin novedad hace más de esto → "Para reclamar"
+const DIAS_NOVEDAD_FRESCA = 15;
+
+function etapaInfo(id){ return ETAPAS.find(e => e.id === id) || ETAPAS[0]; }
+function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function hoyISO(){ const d=new Date(); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().split('T')[0]; }
+function diasDesde(f){ if(!f) return null; return Math.floor((Date.now() - new Date(String(f).slice(0,10)+'T00:00:00').getTime())/86400000); }
+function quienSoy(){ return (gestorActual || '').toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,''); }
+
+async function chequearSeguimiento(){
+  const { error } = await sb.from('actas_italia').select('etapa').limit(1);
+  return !error;
+}
+
+function paraReclamar(a){
+  if (!ETAPAS_ESPERANDO.includes(a.etapa || 'pedida')) return false;
+  const ref = a.novedadFecha || a.fecha;
+  const d = diasDesde(ref);
+  return d !== null && d > DIAS_RECLAMAR;
+}
+
+function pasaFiltroEstado(a){
+  if (filtroEtapa !== 'todas' && (a.etapa || 'pedida') !== filtroEtapa) return false;
+  if (filtroEspecial === 'mias') {
+    const yo = quienSoy();
+    return !!yo && (a.pedidaBy || '').toUpperCase() === yo;
+  }
+  if (filtroEspecial === 'pedidos') return a.pedidoNovedad;
+  if (filtroEspecial === 'reclamar') return paraReclamar(a);
+  return true;
+}
+
+function setFiltroEtapa(id){ filtroEtapa = (filtroEtapa === id ? 'todas' : id); filtrar('proceso'); }
+function setFiltroEspecial(id){ filtroEspecial = (filtroEspecial === id ? '' : id); filtrar('proceso'); }
+
+function renderFiltros(){
+  const box = document.getElementById('filtros-estado');
+  if (!box) return;
+  const L = D.proceso;
+  const cnt = id => L.filter(a => (a.etapa||'pedida') === id).length;
+  const yo = quienSoy();
+  const mias = yo ? L.filter(a => (a.pedidaBy||'').toUpperCase() === yo).length : 0;
+  const pedidos = L.filter(a => a.pedidoNovedad).length;
+  const reclamar = L.filter(paraReclamar).length;
+  const etapasProceso = ETAPAS.filter(e => e.id !== 'entregada');
+  box.innerHTML =
+    `<span class="fchip ${filtroEtapa==='todas'?'on':''}" onclick="setFiltroEtapa('todas')">Todas<span class="n">${L.length}</span></span>` +
+    etapasProceso.map(e => `<span class="fchip ${filtroEtapa===e.id?'on':''}" onclick="setFiltroEtapa('${e.id}')">${e.ico} ${e.label}<span class="n">${cnt(e.id)}</span></span>`).join('') +
+    `<span class="fsep"></span>` +
+    (yo ? `<span class="fchip ${filtroEspecial==='mias'?'on':''}" onclick="setFiltroEspecial('mias')">👤 Mis actas<span class="n">${mias}</span></span>` : '') +
+    `<span class="fchip alerta ${filtroEspecial==='pedidos'?'on':''}" onclick="setFiltroEspecial('pedidos')">🔔 Piden novedad<span class="n">${pedidos}</span></span>` +
+    `<span class="fchip rojo ${filtroEspecial==='reclamar'?'on':''}" onclick="setFiltroEspecial('reclamar')">⏰ Para reclamar<span class="n">${reclamar}</span></span>`;
+}
+
+function celdaEstado(a){
+  const e = etapaInfo(a.etapa);
+  let h = `<span class="etapa-badge ${e.cls}">${e.ico} ${e.label}</span>`;
+  const lineas = [];
+  if (a.fechaEstimada && !['oficina','entregada','negativa'].includes(a.etapa)) {
+    const d = diasDesde(a.fechaEstimada);
+    lineas.push(d > 0 ? `Llega aprox: <b style="color:#b91c1c">${fmt(a.fechaEstimada)} (vencida)</b>` : `Llega aprox: <b>${fmt(a.fechaEstimada)}</b>`);
+  }
+  const cp = parseInt(a.copiasPedidas||1), cl = parseInt(a.copiasLlegadas||0);
+  if (cp > 1 || cl > 0) lineas.push(`Copias: <b>${cl}/${cp}</b> llegadas`);
+  if (a.envio) lineas.push(`📦 ${esc(a.envio)}`);
+  if (lineas.length) h += `<div class="estado-linea">${lineas.join('<br>')}</div>`;
+  if (a.novedad) {
+    const d = diasDesde(a.novedadFecha);
+    const vieja = d !== null && d > DIAS_RECLAMAR;
+    const txt = a.novedad.length > 90 ? a.novedad.slice(0,90) + '…' : a.novedad;
+    h += `<div class="novedad-txt ${vieja?'vieja':''}" title="${esc(a.novedad)}">${esc(txt)}<br><span style="color:#94a3b8">${fmt(String(a.novedadFecha).slice(0,10))}${a.novedadBy?' · '+esc(a.novedadBy):''}</span></div>`;
+  }
+  if (a.pedidoNovedad) h += `<div class="campana">🔔 ${esc(a.pedidoNovedadBy||'Alguien')} pidió novedad</div>`;
+  return h;
+}
+
+function buscarActa(id){
+  for (const t of ['proceso','finalizados']) {
+    const a = D[t].find(x => x.id === id);
+    if (a) return { t, a };
+  }
+  return null;
+}
+
+function cerrarMod(id){ document.getElementById(id).classList.remove('on'); }
+
+function requiereSQL(){
+  if (SEGUIMIENTO_OK) return false;
+  toast('Primero hay que correr actas_seguimiento.sql en Supabase', 'err');
+  return true;
+}
+
+function abrirEstado(id){
+  if (requiereSQL()) return;
+  const r = buscarActa(id); if (!r) return;
+  const a = r.a; actaEnModal = id;
+  document.getElementById('me-sub').textContent = `${a.avo||a.persona||''} · ${a.tipo||''} · ${a.comuna||''}${a.solicitante?' · Cliente: '+a.solicitante:''}`;
+  document.getElementById('me-etapa').innerHTML = ETAPAS.map(e => `<option value="${e.id}" ${e.id===(a.etapa||'pedida')?'selected':''}>${e.ico} ${e.label}</option>`).join('');
+  document.getElementById('me-estimada').value = a.fechaEstimada || '';
+  document.getElementById('me-cped').value = a.copiasPedidas || 1;
+  document.getElementById('me-clleg').value = a.copiasLlegadas || 0;
+  document.getElementById('me-envio').value = a.envio || '';
+  document.getElementById('me-novedad').value = '';
+  const envios = [...new Set(D.proceso.map(x => x.envio).filter(Boolean))];
+  document.getElementById('dl-envios').innerHTML = envios.map(e => `<option value="${esc(e)}">`).join('');
+  const hist = [...(a.historial||[])].reverse();
+  document.getElementById('me-hist').innerHTML = hist.length
+    ? `<h4>Historial</h4>` + hist.map(h => `<div class="hist-item"><span class="hist-f">${fmt(String(h.f||'').slice(0,10))}</span><span class="hist-q">${esc(h.q||'')}</span><span>${esc(h.t||'')}</span></div>`).join('')
+    : `<h4>Historial</h4><div class="mod-hint">Todavía no hay movimientos cargados.</div>`;
+  document.getElementById('mod-estado').classList.add('on');
+}
+
+async function guardarEstado(){
+  const r = buscarActa(actaEnModal); if (!r) return;
+  const { t, a } = r;
+  const etapa = document.getElementById('me-etapa').value;
+  const fechaEstimada = document.getElementById('me-estimada').value || null;
+  const copiasPedidas = Math.max(1, parseInt(document.getElementById('me-cped').value) || 1);
+  const copiasLlegadas = Math.max(0, parseInt(document.getElementById('me-clleg').value) || 0);
+  const envio = document.getElementById('me-envio').value.trim() || null;
+  const novedadNueva = document.getElementById('me-novedad').value.trim();
+  const yo = gestorActual || '—';
+  const hoy = hoyISO();
+
+  const historial = [...(a.historial||[])];
+  if (etapa !== (a.etapa||'pedida')) historial.push({ f: hoy, q: yo, t: `Estado: ${etapaInfo(etapa).label}` });
+  if (copiasLlegadas !== parseInt(a.copiasLlegadas||0)) historial.push({ f: hoy, q: yo, t: `Copias llegadas: ${copiasLlegadas}/${copiasPedidas}` });
+  if ((fechaEstimada||'') !== (a.fechaEstimada||'')) historial.push({ f: hoy, q: yo, t: fechaEstimada ? `Llega aprox: ${fmt(fechaEstimada)}` : 'Sin fecha estimada' });
+  if (novedadNueva) historial.push({ f: hoy, q: yo, t: novedadNueva });
+
+  const upd = {
+    etapa,
+    fecha_estimada: fechaEstimada,
+    copias_pedidas: copiasPedidas,
+    copias_llegadas: copiasLlegadas,
+    envio,
+    historial
+  };
+  // Cualquier actualización real responde el pedido de novedad
+  const huboCambio = historial.length > (a.historial||[]).length || envio !== (a.envio||null);
+  if (novedadNueva) { upd.novedad = novedadNueva; upd.novedad_fecha = hoy; upd.novedad_by = yo; }
+  if (huboCambio && a.pedidoNovedad) { upd.pedido_novedad = false; }
+
+  let finalizar = false;
+  if (t === 'proceso' && (etapa === 'entregada' || etapa === 'negativa')) {
+    finalizar = confirm(`Marcaste "${etapaInfo(etapa).label}". ¿La paso también a Finalizados?`);
+    if (finalizar) upd.estado = 'finalizados';
+  }
+
+  const btn = document.getElementById('me-guardar'); btn.disabled = true;
+  toast('Guardando...', 'loading');
+  const { error } = await sb.from('actas_italia').update(upd).eq('id', a.id);
+  btn.disabled = false;
+  if (error) { toast('Error al guardar: ' + error.message, 'err'); return; }
+
+  Object.assign(a, {
+    etapa, fechaEstimada: fechaEstimada||'', copiasPedidas, copiasLlegadas, envio: envio||'', historial,
+    ...(novedadNueva ? { novedad: novedadNueva, novedadFecha: hoy, novedadBy: yo } : {}),
+    ...(upd.pedido_novedad === false ? { pedidoNovedad: false } : {})
+  });
+  if (finalizar) {
+    D.proceso = D.proceso.filter(x => x.id !== a.id);
+    a.estado = 'finalizados';
+    D.finalizados.unshift(a);
+  }
+  cerrarMod('mod-estado');
+  filtrar('proceso'); filtrar('finalizados'); actualizarContador();
+  toast('✓ Estado actualizado');
+}
+
+async function pedirNovedad(id){
+  if (requiereSQL()) return;
+  const r = buscarActa(id); if (!r) return;
+  const a = r.a;
+  if (a.pedidoNovedad) { toast(`Ya está pedida (por ${a.pedidoNovedadBy||'alguien'}). Ger la tiene en su lista.`); return; }
+  const d = diasDesde(a.novedadFecha);
+  if (a.novedad && d !== null && d <= DIAS_NOVEDAD_FRESCA) {
+    if (!confirm(`Ya hay una novedad de hace ${d} día${d===1?'':'s'}:\n\n"${a.novedad}"\n\n¿Igual querés pedir otra?`)) return;
+  }
+  const yo = gestorActual || '—';
+  const historial = [...(a.historial||[]), { f: hoyISO(), q: yo, t: '🔔 Pidió novedad' }];
+  toast('Enviando pedido...', 'loading');
+  const { error } = await sb.from('actas_italia').update({
+    pedido_novedad: true, pedido_novedad_by: yo, pedido_novedad_fecha: new Date().toISOString(), historial
+  }).eq('id', a.id);
+  if (error) { toast('Error: ' + error.message, 'err'); return; }
+  Object.assign(a, { pedidoNovedad: true, pedidoNovedadBy: yo, pedidoNovedadFecha: new Date().toISOString(), historial });
+  filtrar('proceso');
+  toast('🔔 Listo: le aparece a Ger en "Piden novedad"');
+}
+
+function abrirEnvios(){
+  if (requiereSQL()) return;
+  const grupos = {};
+  D.proceso.forEach(a => { if (a.envio) (grupos[a.envio] = grupos[a.envio] || []).push(a); });
+  const nombres = Object.keys(grupos).sort();
+  const box = document.getElementById('envios-lista');
+  box.innerHTML = nombres.length ? nombres.map(n => {
+    const L = grupos[n];
+    const camino = L.filter(a => a.etapa === 'camino').length;
+    const oficina = L.filter(a => a.etapa === 'oficina').length;
+    const est = L.map(a => a.fechaEstimada).filter(Boolean).sort()[0];
+    const nEsc = esc(n).replace(/'/g,'&#39;');
+    return `<div class="envio-row">
+  <div><div class="envio-n">📦 ${esc(n)}</div>
+  <div class="envio-m">${L.length} acta${L.length>1?'s':''} · ${camino} en camino · ${oficina} en oficina${est?` · llega aprox ${fmt(est)}`:''}</div>
+  <div class="envio-m">${L.slice(0,6).map(a => esc(a.avo||a.persona||'')).join(', ')}${L.length>6?'…':''}</div></div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap">
+    <button class="btn-pedir" data-envio="${nEsc}" onclick="moverEnvio(this.dataset.envio,'camino')">✈️ En camino</button>
+    <button class="btn-finalizar" data-envio="${nEsc}" onclick="moverEnvio(this.dataset.envio,'oficina')">🏢 Llegó a la oficina</button>
+  </div></div>`;
+  }).join('') : `<div class="mod-hint" style="font-size:13px;line-height:1.5">Todavía no hay envíos.<br>Para armar uno: en cada acta tocá <b>📍 Estado</b> y escribí el mismo nombre en "Envío" (ej: <i>Envío 20/11</i>). Después desde acá las movés todas juntas.</div>`;
+  document.getElementById('mod-envios').classList.add('on');
+}
+
+async function moverEnvio(nombre, etapa){
+  const L = D.proceso.filter(a => a.envio === nombre);
+  if (!L.length) return;
+  const info = etapaInfo(etapa);
+  if (!confirm(`¿Marcar las ${L.length} actas de "${nombre}" como "${info.label}"?`)) return;
+  const yo = gestorActual || '—', hoy = hoyISO();
+  toast('Actualizando envío...', 'loading');
+  const res = await Promise.all(L.map(a => {
+    const historial = [...(a.historial||[]), { f: hoy, q: yo, t: `Estado: ${info.label} (${nombre})` }];
+    const upd = { etapa, historial, pedido_novedad: false };
+    if (etapa === 'oficina') upd.copias_llegadas = Math.max(parseInt(a.copiasLlegadas||0), parseInt(a.copiasPedidas||1));
+    return sb.from('actas_italia').update(upd).eq('id', a.id).then(({ error }) => {
+      if (!error) Object.assign(a, { etapa, historial, pedidoNovedad: false, ...(upd.copias_llegadas !== undefined ? { copiasLlegadas: upd.copias_llegadas } : {}) });
+      return error;
+    });
+  }));
+  const errores = res.filter(Boolean).length;
+  filtrar('proceso'); abrirEnvios();
+  toast(errores ? `⚠️ ${errores} no se pudieron actualizar` : `✓ ${L.length} actas → ${info.label}`, errores ? 'err' : 'ok');
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { cerrarMod('mod-estado'); cerrarMod('mod-envios'); } });
 
 // =============================================
 // ARRANCAR
