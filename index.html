@@ -40,6 +40,9 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
 .htab.on{background:rgba(255,255,255,.18);color:#fff;font-weight:700;border-bottom:2px solid #fff}
 .gchip{display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;background:rgba(255,255,255,.12);color:#fff}
 .gdot{width:8px;height:8px;border-radius:50%;background:#4ade80}
+.user-chip{display:flex;align-items:center;gap:8px;padding:5px 6px 5px 14px;border-radius:20px;font-size:13px;font-weight:600;background:rgba(255,255,255,.12);color:#fff;margin-right:8px}
+.user-chip button{background:#fff;color:#1a1f6e;border:0;border-radius:14px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer}
+.user-chip button:hover{background:#e0e7ff}
 
 /* BODY */
 .view{display:none}
@@ -358,6 +361,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
 <button class="htab" onclick="cambiar('cercania')" data-tab="cercania">🧭 Cercanía</button>
 <button class="htab" id="tab-admin" style="display:none" onclick="cambiar('admin')" data-tab="admin">🗺️ Comunas Admin <span class="admin-badge">🔒</span></button>
 </div>
+<div class="user-chip" id="user-chip" style="display:none">👤 <span id="user-name"></span><button type="button" onclick="cambiarUsuario()" title="Cerrar sesión y entrar con otro usuario">Salir</button></div>
 <div class="gchip">
 <div class="gdot" style="background:var(--am)"></div>
 <span id="cnt">0</span>
@@ -1271,9 +1275,17 @@ async function entrarComo(user) {
   rolActual = (perfil.is_admin || ADMINS.includes(perfil.gestor)) ? 'admin' : 'equipo';
   gestorActual = perfil.gestor || '';
   document.getElementById('login-overlay').style.display = 'none';
+  document.getElementById('user-name').textContent = gestorActual || 'Sin nombre';
+  document.getElementById('user-chip').style.display = 'flex';
   document.getElementById('tab-admin').style.display = rolActual === 'admin' ? 'flex' : 'none';
   cargarDatos();
   return true;
+}
+
+async function cambiarUsuario() {
+  if (!confirm('¿Cerrar sesión para entrar con otro usuario? (También se cierra en el Sistema Zittano de esta compu)')) return;
+  await sb.auth.signOut();
+  location.reload();
 }
 
 async function hacerLogin() {
