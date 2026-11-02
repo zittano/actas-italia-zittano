@@ -377,7 +377,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
 </div>
 <div class="toolbar">
 <div class="search-box">
-<input type="text" placeholder="🔍 Buscar actas..." id="s-proceso" onkeyup="filtrar('proceso')">
+<input type="search" name="buscar-proceso" autocomplete="off" placeholder="🔍 Buscar actas..." id="s-proceso" oninput="filtrar('proceso')">
 </div>
 <button class="btn-agrupar" id="btn-agrupar-proceso" onclick="toggleAgrupar('proceso')">🗺️ Agrupar por provincia</button>
 <button class="btn-agrupar" onclick="abrirEnvios()">📦 Envíos</button>
@@ -415,7 +415,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
 <div class="vbody">
 <div class="toolbar">
 <div class="search-box">
-<input type="text" placeholder="Buscar..." id="s-finalizados" onkeyup="filtrar('finalizados')">
+<input type="search" name="buscar-finalizados" autocomplete="off" placeholder="Buscar..." id="s-finalizados" oninput="filtrar('finalizados')">
 </div>
 <button class="btn-agrupar" id="btn-agrupar-finalizados" onclick="toggleAgrupar('finalizados')">🗺️ Agrupar por provincia</button>
 </div>
@@ -453,7 +453,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
   </div>
 </div>
 <div class="toolbar" style="flex-wrap:wrap">
-<input type="text" class="input-nueva-comuna" id="input-nueva-comuna" placeholder="✚ Nombre de la comuna (ej: Roma, Milán...)" style="max-width:300px">
+<input type="text" class="input-nueva-comuna" id="input-nueva-comuna" name="nueva-comuna" autocomplete="off" placeholder="✚ Nombre de la comuna (ej: Roma, Milán...)" style="max-width:300px">
 <select class="input-nueva-comuna" id="select-provincia-euro" style="max-width:230px;cursor:pointer">
   <option value="">— Elegí la provincia —</option>
 </select>
@@ -476,7 +476,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
   </div>
 </div>
 <div class="toolbar" style="flex-wrap:wrap">
-  <input type="text" class="input-nueva-comuna" id="input-ubicacion" placeholder="📍 ¿Dónde estás? (ej: Cosenza, Roma, Nápoles...)" style="max-width:340px" onkeypress="if(event.key==='Enter')buscarCercanas()">
+  <input type="text" class="input-nueva-comuna" id="input-ubicacion" name="ubicacion" autocomplete="off" placeholder="📍 ¿Dónde estás? (ej: Cosenza, Roma, Nápoles...)" style="max-width:340px" onkeypress="if(event.key==='Enter')buscarCercanas()">
   <button class="btn-add" style="background:linear-gradient(135deg,#065f46,#059669)" onclick="buscarCercanas()">
     <span style="font-size:16px">🔎</span>
     <span style="font-weight:700">Buscar cerca</span>
@@ -498,15 +498,18 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
 <div class="login-logo">ZITTANO</div>
 <div class="login-sub">Actas Italia</div>
 <div class="login-title">Entrá con tu usuario del Sistema</div>
-<select class="login-input" id="login-gestor" aria-label="¿Quién sos?" style="margin-bottom:10px">
+<form id="login-form" autocomplete="on" onsubmit="event.preventDefault();hacerLogin()">
+<input type="email" id="login-email" name="username" autocomplete="username" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+<select class="login-input" id="login-gestor" onchange="syncLoginEmail()" aria-label="¿Quién sos?" style="margin-bottom:10px">
   <option value="">¿Quién sos?</option>
   <option>Belén</option>
   <option>Germán</option>
   <option>Malena</option>
   <option>Sofía</option>
 </select>
-<input type="password" class="login-input" id="login-input" placeholder="Contraseña del Sistema" aria-label="Contraseña" onkeypress="if(event.key==='Enter')hacerLogin()">
-<button class="login-btn" id="login-btn" onclick="hacerLogin()">Ingresar →</button>
+<input type="password" class="login-input" id="login-input" name="password" autocomplete="current-password" placeholder="Contraseña del Sistema" aria-label="Contraseña">
+<button type="submit" class="login-btn" id="login-btn">Ingresar →</button>
+</form>
 <div class="login-err" id="login-err">⚠️ Usuario o contraseña incorrectos. Intentá de nuevo.</div>
 </div>
 </div>
@@ -522,7 +525,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:#1e293b;min-hei
   <div class="admin-badge-header">🔒 SOLO ADMINS</div>
 </div>
 <div class="search-comunas-wrap">
-  <input type="text" class="search-comunas" id="search-admin" placeholder="Buscar provincia o comuna..." oninput="filtrarAdmin()">
+  <input type="text" class="search-comunas" id="search-admin" name="buscar-admin" autocomplete="off" placeholder="Buscar provincia o comuna..." oninput="filtrarAdmin()">
 </div>
 <div class="provincias-grid" id="provincias-grid"></div>
 </div>
@@ -1256,9 +1259,15 @@ const EMAIL_POR_GESTOR = {
 const ADMINS = ['Belén', 'Germán'];   // ven la pestaña "Comunas Admin"
 let rolActual = null;
 
+function syncLoginEmail() {
+  const g = document.getElementById('login-gestor').value;
+  document.getElementById('login-email').value = EMAIL_POR_GESTOR[g] || '';
+}
+
 async function entrarComo(user) {
   const { data: perfil, error } = await sb.from('profiles').select('gestor,is_admin').eq('id', user.id).single();
-  if (error || !perfil) { await sb.auth.signOut(); return false; }
+  // Sin perfil: no cerramos la sesión (es la misma del Sistema), solo no entramos
+  if (error || !perfil) { console.warn('Actas: no se pudo leer el perfil', error); return false; }
   rolActual = (perfil.is_admin || ADMINS.includes(perfil.gestor)) ? 'admin' : 'equipo';
   gestorActual = perfil.gestor || '';
   document.getElementById('login-overlay').style.display = 'none';
@@ -1274,6 +1283,7 @@ async function hacerLogin() {
   const btn = document.getElementById('login-btn');
   err.style.display = 'none';
   if (!gestor || !pwd) { err.style.display = 'block'; return; }
+  syncLoginEmail();
   btn.disabled = true; btn.textContent = 'Entrando...';
   const { data, error } = await sb.auth.signInWithPassword({ email: EMAIL_POR_GESTOR[gestor], password: pwd });
   const ok = !error && data && data.user && await entrarComo(data.user);
@@ -2032,6 +2042,8 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') { cerrarMod(
     });
   }
 })();
+// Limpia cualquier texto que el navegador haya autocompletado en los buscadores
+['s-proceso','s-finalizados','search-admin'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
 // Si ya había una sesión abierta (por ejemplo, del Sistema), entra directo
 sb.auth.getSession().then(async ({ data }) => {
   if (data && data.session && await entrarComo(data.session.user)) return;
